@@ -15,14 +15,10 @@ class Day01:
     def compute_including_extra_fuel(self, mass):
         total_fuel = 0
         extra_fuel = mass
-        # fuel = self.compute_fuel(mass)
-        while True:
+        while (extra_fuel := self.compute_fuel(extra_fuel)) > 0:
             # Compute the fuel for this fuel
-            extra_fuel = self.compute_fuel(extra_fuel)
-            if extra_fuel <= 0:
-                return total_fuel
-            else:
-                total_fuel += extra_fuel
+            total_fuel += extra_fuel
+        return total_fuel
 
 
 class Day01PartA(Day01, FileReaderSolution):
@@ -33,7 +29,9 @@ class Day01PartA(Day01, FileReaderSolution):
 
 class Day01PartB(Day01, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        extra_fuel = []
-        for module in input_data.splitlines():
-            extra_fuel.append(self.compute_including_extra_fuel(int(module)))
-        return sum(extra_fuel)
+        return sum(
+            [
+                self.compute_including_extra_fuel(int(mass))
+                for mass in input_data.splitlines()
+            ]
+        )

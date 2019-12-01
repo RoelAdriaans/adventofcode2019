@@ -1,3 +1,8 @@
+black
 Click
 cookiecutter
+pytest
+pytest-cov
+pytest-xdist
+tox
 tqdm

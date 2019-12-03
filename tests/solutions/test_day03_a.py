@@ -13,7 +13,7 @@ class TestDay03PartA:
         assert point_a != point_q
 
     @pytest.mark.parametrize(
-        ("input_data", "expected_result"), [("R8", 9), ("R8,U5", 14)]
+        ("input_data", "expected_result"), [("R8", 8), ("R8,U5", 13)]
     )
     def test_day03a_create(self, input_data, expected_result):
         solution = Day03PartA()
@@ -45,4 +45,4 @@ class TestDay03PartA:
         """ Result we got when we did the real solution """
         solution = Day03PartA()
         res = solution("day_03/day03.txt")
-        assert res == 0
+        assert res == 8015

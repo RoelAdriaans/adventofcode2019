@@ -1,8 +1,22 @@
 from utils.abstract import FileReaderSolution
-from collections import Counter, namedtuple
 from typing import List
 
-Point = namedtuple("Point", "x y")
+
+class Point:
+    x = 0
+    y = 0
+    steps = 0
+
+    def __init__(self, x: int, y: int, steps: int = 0):
+        self.x = x
+        self.y = y
+        self.steps = steps
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __hash__(self):
+        return hash((self.x, self.y))
 
 
 class Day03:
@@ -26,6 +40,7 @@ class Day03:
         # points.append(start)
         posx = 0
         posy = 0
+        steps = 1
         input_points = input_str.split(",")
         for point in input_points:
             value = int(point[1:])
@@ -38,8 +53,9 @@ class Day03:
                     posy -= 1
                 elif point[0] == "L":
                     posx -= 1
-                points.append(Point(x=posx, y=posy))
+                points.append(Point(x=posx, y=posy, steps=steps))
                 value -= 1
+                steps += 1
         return points
 
     def create_lines(self, input_lines: str):
@@ -50,8 +66,22 @@ class Day03:
     def find_duplicates(self):
         """ Find duplicates but remove """
         common = list(set(self.lines[0]).intersection(self.lines[1]))
-
         return common
+
+    def find_closest_point(self):
+        """ Return the discance to the closest points in steps to reach it """
+        duplicates = self.find_duplicates()
+        # Get all the points, that are in
+        total_distance = []
+        for duplicate in duplicates:
+            # Get all the points on this location
+            points = [
+                val for sublist in self.lines for val in sublist if val == duplicate
+            ]
+            # Add all the distances of these points together
+            total_distance.append(sum(point.steps for point in points))
+
+        return min(total_distance)
 
     @staticmethod
     def compute_distance(point_a: Point, point_b: Point) -> int:
@@ -69,10 +99,13 @@ class Day03PartA(Day03, FileReaderSolution):
         self.create_lines(input_data)
         common_coints = self.find_duplicates()
         point_start = Point(0, 0)
-        min_distance = min(self.compute_distance(point_start, point) for point in common_coints)
+        min_distance = min(
+            self.compute_distance(point_start, point) for point in common_coints
+        )
         return min_distance
 
 
 class Day03PartB(Day03, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+        self.create_lines(input_data)
+        return self.find_closest_point()

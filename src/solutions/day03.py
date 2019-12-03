@@ -8,6 +8,15 @@ class Point:
     steps = 0
 
     def __init__(self, x: int, y: int, steps: int = 0):
+        """
+        This class is a point in the grid.
+        The steps parameter is optional and is ignored in the equality or hash
+        checks.
+
+        :param x: `x` location on the grid
+        :param y: `y` location on the grid
+        :param steps: Optional: Steps from the origin
+        """
         self.x = x
         self.y = y
         self.steps = steps
@@ -20,10 +29,8 @@ class Point:
 
 
 class Day03:
-    lines = None
-
     def __init__(self):
-        self.lines = {}
+        self.lines = []
 
     @staticmethod
     def create_line(input_str: str) -> List[Point]:
@@ -59,12 +66,13 @@ class Day03:
         return points
 
     def create_lines(self, input_lines: str):
+        """ Create the lines and add them to the internal lines list """
         self.lines = []
         for line in input_lines.splitlines():
             self.lines.append(self.create_line(line))
 
     def find_duplicates(self):
-        """ Find duplicates but remove """
+        """ Find duplicates points in the internal lines list.  """
         common = list(set(self.lines[0]).intersection(self.lines[1]))
         return common
 

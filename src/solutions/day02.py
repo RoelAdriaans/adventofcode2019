@@ -1,10 +1,11 @@
 from utils.abstract import FileReaderSolution
+from typing import List
 
 
 class Day02:
     program_counter = 0
 
-    def look_at_opcodes(self, opcodes: [list]):
+    def look_at_opcodes(self, opcodes: List[int]) -> List[int]:
         self.program_counter = 0
         while True:
             current_opcode = opcodes[self.program_counter]
@@ -47,3 +48,4 @@ class Day02PartB(Day02, FileReaderSolution):
                 result = self.look_at_opcodes(opcodes=opcodes)
                 if result[0] == 19690720:
                     return 100 * noun + verb
+        raise ValueError("Result not found")

@@ -32,13 +32,20 @@ class Day05:
             param_3_position_mode,
         )
 
-    def _get_instruction(self, position_mode: bool, value) -> int:
+    def _get_value_from_location(self, position_mode: bool, position: int) -> int:
         """
         If `position_mode` is True, return the value in that position
         If `position_mode` is False,
         """
+        try:
+            value = self.instructions[self.program_counter + position]
+        except IndexError:
+            value = False
         if position_mode:
-            return self.instructions[value]
+            try:
+                return self.instructions[value]
+            except IndexError:
+                return False
         else:
             return value
 
@@ -59,31 +66,20 @@ class Day05:
             param_2_position_mode = True
             param_3_position_mode = True
 
+        val_1 = self._get_value_from_location(param_1_position_mode, 1)
+        val_2 = self._get_value_from_location(param_2_position_mode, 2)
+
         if current_opcode == 99:
             raise ProgramFinished
 
         if current_opcode == 1:
             # Add values
-            val_1 = self._get_instruction(
-                param_1_position_mode, self.instructions[self.program_counter + 1]
-            )
-            val_2 = self._get_instruction(
-                param_2_position_mode, self.instructions[self.program_counter + 2]
-            )
             store = self.instructions[self.program_counter + 3]
-
             self.instructions[store] = val_1 + val_2
             self.program_counter += 4
 
         elif current_opcode == 2:
             # Multiply values
-            val_1 = self._get_instruction(
-                param_1_position_mode, self.instructions[self.program_counter + 1]
-            )
-            val_2 = self._get_instruction(
-                param_2_position_mode, self.instructions[self.program_counter + 2]
-            )
-
             store = self.instructions[self.program_counter + 3]
 
             self.instructions[store] = val_1 * val_2
@@ -93,11 +89,10 @@ class Day05:
             store = self.instructions[self.program_counter + 1]
             self.instructions[store] = input_value
             self.program_counter += 2
+
         elif current_opcode == 4:
             # Return output
-            output = self._get_instruction(
-                param_1_position_mode, self.instructions[self.program_counter + 1]
-            )
+            output = self._get_value_from_location(param_1_position_mode, 1)
 
             self.program_counter += 2
             return output
@@ -106,13 +101,6 @@ class Day05:
             # Jump-If-True: If the first parameter is *non-zero*, it sets the
             # instruction pointer to the value from the second parameter.
             # Otherwise, it does nothing.
-            val_1 = self._get_instruction(
-                param_1_position_mode, self.instructions[self.program_counter + 1]
-            )
-            val_2 = self._get_instruction(
-                param_2_position_mode, self.instructions[self.program_counter + 2]
-            )
-
             if val_1 != 0:
                 self.program_counter = val_2
             else:
@@ -122,12 +110,6 @@ class Day05:
             # Jump-If-False: If the first parameter is *zero*, it sets the instruction
             # pointer to the value from the second parameter.
             # Otherwise, it does nothing.
-            val_1 = self._get_instruction(
-                param_1_position_mode, self.instructions[self.program_counter + 1]
-            )
-            val_2 = self._get_instruction(
-                param_2_position_mode, self.instructions[self.program_counter + 2]
-            )
             if val_1 == 0:
                 self.program_counter = val_2
             else:
@@ -137,12 +119,6 @@ class Day05:
             # less than: if the first parameter is less than the second parameter,
             # it stores 1 in the position given by the third parameter.
             # Otherwise, it stores 0.
-            val_1 = self._get_instruction(
-                param_1_position_mode, self.instructions[self.program_counter + 1]
-            )
-            val_2 = self._get_instruction(
-                param_2_position_mode, self.instructions[self.program_counter + 2]
-            )
             store = self.instructions[self.program_counter + 3]
 
             if val_1 < val_2:
@@ -155,12 +131,6 @@ class Day05:
             # equals: if the first parameter is equal to the second parameter,
             # it stores 1 in the position given by the third parameter.
             # Otherwise, it stores 0.
-            val_1 = self._get_instruction(
-                param_1_position_mode, self.instructions[self.program_counter + 1]
-            )
-            val_2 = self._get_instruction(
-                param_2_position_mode, self.instructions[self.program_counter + 2]
-            )
             store = self.instructions[self.program_counter + 3]
 
             if val_1 == val_2:

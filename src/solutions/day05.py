@@ -63,6 +63,7 @@ class Day05:
             raise ProgramFinished
 
         if current_opcode == 1:
+            # Add values
             val_1 = self._get_instruction(
                 param_1_position_mode, self.instructions[self.program_counter + 1]
             )
@@ -75,6 +76,7 @@ class Day05:
             self.program_counter += 4
 
         elif current_opcode == 2:
+            # Multiply values
             val_1 = self._get_instruction(
                 param_1_position_mode, self.instructions[self.program_counter + 1]
             )
@@ -99,8 +101,85 @@ class Day05:
 
             self.program_counter += 2
             return output
+
+        elif current_opcode == 5:
+            # Jump-If-True: If the first parameter is *non-zero*, it sets the
+            # instruction pointer to the value from the second parameter.
+            # Otherwise, it does nothing.
+            val_1 = self._get_instruction(
+                param_1_position_mode, self.instructions[self.program_counter + 1]
+            )
+            val_2 = self._get_instruction(
+                param_2_position_mode, self.instructions[self.program_counter + 2]
+            )
+
+            if val_1 != 0:
+                self.program_counter = val_2
+            else:
+                self.program_counter += 3
+
+        elif current_opcode == 6:
+            # Jump-If-False: If the first parameter is *zero*, it sets the instruction
+            # pointer to the value from the second parameter.
+            # Otherwise, it does nothing.
+            val_1 = self._get_instruction(
+                param_1_position_mode, self.instructions[self.program_counter + 1]
+            )
+            val_2 = self._get_instruction(
+                param_2_position_mode, self.instructions[self.program_counter + 2]
+            )
+            if val_1 == 0:
+                self.program_counter = val_2
+            else:
+                self.program_counter += 3
+
+        elif current_opcode == 7:
+            # less than: if the first parameter is less than the second parameter,
+            # it stores 1 in the position given by the third parameter.
+            # Otherwise, it stores 0.
+            val_1 = self._get_instruction(
+                param_1_position_mode, self.instructions[self.program_counter + 1]
+            )
+            val_2 = self._get_instruction(
+                param_2_position_mode, self.instructions[self.program_counter + 2]
+            )
+            store = self.instructions[self.program_counter + 3]
+
+            if val_1 < val_2:
+                self.instructions[store] = 1
+            else:
+                self.instructions[store] = 0
+            self.program_counter += 4
+
+        elif current_opcode == 8:
+            # equals: if the first parameter is equal to the second parameter,
+            # it stores 1 in the position given by the third parameter.
+            # Otherwise, it stores 0.
+            val_1 = self._get_instruction(
+                param_1_position_mode, self.instructions[self.program_counter + 1]
+            )
+            val_2 = self._get_instruction(
+                param_2_position_mode, self.instructions[self.program_counter + 2]
+            )
+            store = self.instructions[self.program_counter + 3]
+
+            if val_1 == val_2:
+                self.instructions[store] = 1
+            else:
+                self.instructions[store] = 0
+            self.program_counter += 4
+
         else:
             raise ValueError(f"Unknown opcode: {current_opcode}")
+
+    def run(self, input_value):
+        try:
+            while True:
+                res = self.process_instruction(input_value)
+                if res not in (0, None):
+                    return res
+        except ProgramFinished:
+            return res
 
 
 class Day05PartA(Day05, FileReaderSolution):
@@ -122,4 +201,7 @@ class Day05PartA(Day05, FileReaderSolution):
 
 class Day05PartB(Day05, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+        instructions = list(map(int, input_data.split(",")))
+        self.load_instructions(instructions)
+        res = self.run(5)
+        return res

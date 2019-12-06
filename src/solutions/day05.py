@@ -8,7 +8,7 @@ class ProgramFinished(Exception):
 
 class Day05:
     program_counter = 0
-    instructions = []
+    instructions: List[int] = []
 
     def load_instructions(self, instructions: List[int]):
         self.program_counter = 0
@@ -23,13 +23,11 @@ class Day05:
         current_opcode = int(str_opcode[-2:])
         param_1_position_mode = not bool(int(str_opcode[len(str_opcode) - 3]))
         param_2_position_mode = not bool(int(str_opcode[len(str_opcode) - 4]))
-        param_3_position_mode = not bool(int(str_opcode[len(str_opcode) - 5]))
 
         return (
             current_opcode,
             param_1_position_mode,
             param_2_position_mode,
-            param_3_position_mode,
         )
 
     def _get_value_from_location(self, position_mode: bool, position: int) -> int:
@@ -58,13 +56,11 @@ class Day05:
                 current_opcode,
                 param_1_position_mode,
                 param_2_position_mode,
-                param_3_position_mode,
             ) = self._parse_immediate_mode()
         else:
             # No long upcode, these will be false
             param_1_position_mode = True
             param_2_position_mode = True
-            param_3_position_mode = True
 
         val_1 = self._get_value_from_location(param_1_position_mode, 1)
         val_2 = self._get_value_from_location(param_2_position_mode, 2)

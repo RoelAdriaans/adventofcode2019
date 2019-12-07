@@ -1,6 +1,6 @@
 from utils.abstract import FileReaderSolution
 from typing import List
-from anytree import Node, RenderTree
+from anytree import Node, Walker
 
 
 class Day06:
@@ -37,6 +37,19 @@ class Day06:
         if len(self.root_node) >= 2:
             raise ValueError("Too much roots! Found: {len(self.root_node)}")
 
+    def find_distance_between_nodes(self, node_from: str, node_to: str) -> int:
+        """ Find the distance between nodes """
+        # We are on the node we want to compute from, so we start with our parent
+        from_node = self.nodes[node_from].parent
+        to_node = self.nodes[node_to].parent
+        w = Walker()
+        walk = w.walk(from_node, to_node)
+
+        # Walk 0 contains the nodes to go up,
+        # Walk 1 contains the common node, we can ignore that one,
+        # Walk 2 contains the nodes to go down.
+        return len(walk[0]) + len(walk[2])
+
 
 class Day06PartA(Day06, FileReaderSolution):
     def solve(self, input_data: str) -> int:
@@ -50,4 +63,9 @@ class Day06PartA(Day06, FileReaderSolution):
 
 class Day06PartB(Day06, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+        # Parse input
+        input_lines = input_data.splitlines()
+        orbits = self.parse_lines(input_lines)
+        self.create_nodes(orbits)
+        res = self.find_distance_between_nodes("YOU", "SAN")
+        return res

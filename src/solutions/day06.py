@@ -1,6 +1,6 @@
 from utils.abstract import FileReaderSolution
 from typing import List
-from anytree import Node, Walker
+from anytree import Node, Walker  # type: ignore
 
 
 class Day06:

@@ -13,15 +13,18 @@ class TestDay05PartB:
             [3, 3, 1108, -1, 8, 3, 4, 3, 99],  # immediate
         ):
             solution.load_instructions(data)
-            res = solution.run(8)
+            solution.load_input_values([8])
+            res = solution.run()
             assert res == 1
 
             solution.load_instructions(data)
-            res = solution.run(7)
+            solution.load_input_values([7])
+            res = solution.run()
             assert res == 0
 
             solution.load_instructions(data)
-            res = solution.run(9)
+            solution.load_input_values([9])
+            res = solution.run()
             assert res == 0
 
         # Position and immediate mode, is len than 8
@@ -30,15 +33,18 @@ class TestDay05PartB:
             [3, 3, 1107, -1, 8, 3, 4, 3, 99],  # Immediate mode
         ):
             solution.load_instructions(data)
-            res = solution.run(8)
+            solution.load_input_values([8])
+            res = solution.run()
             assert res == 0
 
             solution.load_instructions(data)
-            res = solution.run(7)
+            solution.load_input_values([7])
+            res = solution.run()
             assert res == 1
 
             solution.load_instructions(data)
-            res = solution.run(9)
+            solution.load_input_values([9])
+            res = solution.run()
             assert res == 0
 
         # Test jumps:
@@ -51,15 +57,18 @@ class TestDay05PartB:
         ):
 
             solution.load_instructions(data)
-            res = solution.run(0)
+            solution.load_input_values([0])
+            res = solution.run()
             assert res == 0
 
             solution.load_instructions(data)
-            res = solution.run(1)
+            solution.load_input_values([1])
+            res = solution.run()
             assert res == 1
 
             solution.load_instructions(data)
-            res = solution.run(150)
+            solution.load_input_values([150])
+            res = solution.run()
             assert res == 1
 
     @pytest.mark.parametrize(
@@ -80,7 +89,9 @@ class TestDay05PartB:
         solution = Day05PartB()
 
         solution.load_instructions(instructions)
-        res = solution.run(input_value)
+        solution.load_input_values([input_value])
+
+        res = solution.run()
         assert res == exoected_output_value
 
     def test_day05b_data(self):

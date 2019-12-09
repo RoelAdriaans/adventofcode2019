@@ -17,14 +17,7 @@ class Day05PartA(Day05, FileReaderSolution, IntCode):
         # next instructions terminates the program
         instructions = list(map(int, input_data.split(",")))
         self.load_instructions(instructions)
-        res = False
-        try:
-            while True:
-                res = self.process_instruction(1)
-                if res not in (0, None):
-                    return res
-        except ProgramFinished:
-            pass
+        res = self.run(input_value=1)
         return res
 
 

@@ -147,15 +147,11 @@ class IntCode:
         else:
             raise ValueError(f"Unknown opcode: {current_opcode}")
 
-    def run(self, input_value=None, ignore_zero_return=True):
-        if ignore_zero_return:
-            stop = (0, None)
-        else:
-            stop = (None,)
+    def run(self, input_value=None):
         try:
             while True:
                 res = self.process_instruction(input_value)
-                if res not in stop:
+                if res not in (0, None):
                     return res
         except ProgramFinished:
             return res

@@ -17,7 +17,9 @@ class TestDay02PartA:
     def test_day02a_solve(self, input_data, expected_result):
         solution = Day02PartA()
         opcodes = [int(digit) for digit in input_data.split(",")]
-        result = solution.look_at_opcodes(opcodes)[0]
+        solution.load_instructions(opcodes)
+        solution.run()
+        result = solution.get_register(0)
         assert result == expected_result
 
     def test_day02a_data(self):

@@ -18,10 +18,14 @@ class IntCode:
 
     program_counter = 0
     instructions: List[int] = []
+    input_values: List[int] = []
 
     def load_instructions(self, instructions: List[int]):
         self.program_counter = 0
         self.instructions = instructions[:]
+
+    def load_input_values(self, input_values: List[int]):
+        self.input_values.extend(input_values)
 
     def _parse_immediate_mode(self):
         current_opcode = self.instructions[self.program_counter]
@@ -56,21 +60,13 @@ class IntCode:
         else:
             return value
 
-    def process_instruction(self, input_value=None):
+    def process_instruction(self):
         """ Process the current instruction and increate the program counter"""
-        current_opcode = self.instructions[self.program_counter]
-        str_opcode = str(current_opcode)
-        if len(str_opcode) >= 3:
-            (
-                current_opcode,
-                param_1_position_mode,
-                param_2_position_mode,
-            ) = self._parse_immediate_mode()
-        else:
-            # No long upcode, these will be false
-            param_1_position_mode = True
-            param_2_position_mode = True
-
+        (
+            current_opcode,
+            param_1_position_mode,
+            param_2_position_mode,
+        ) = self._parse_immediate_mode()
         val_1 = self._get_value_from_location(param_1_position_mode, 1)
         val_2 = self._get_value_from_location(param_2_position_mode, 2)
 
@@ -89,10 +85,11 @@ class IntCode:
 
             self.instructions[store] = val_1 * val_2
             self.program_counter += 4
+
         elif current_opcode == 3:
             # Use input
             store = self.instructions[self.program_counter + 1]
-            self.instructions[store] = input_value
+            self.instructions[store] = self.input_values.pop()
             self.program_counter += 2
 
         elif current_opcode == 4:
@@ -147,10 +144,15 @@ class IntCode:
         else:
             raise ValueError(f"Unknown opcode: {current_opcode}")
 
-    def run(self, input_value=None):
+    def run(self) -> int:
+        """
+        Run the IntCode computer until the output is not 0 or None, or until
+        the program runs out and raises an ProgramFinished exception.
+        """
+        res = None
         try:
             while True:
-                res = self.process_instruction(input_value)
+                res = self.process_instruction()
                 if res not in (0, None):
                     return res
         except ProgramFinished:

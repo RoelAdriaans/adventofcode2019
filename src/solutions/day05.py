@@ -17,7 +17,8 @@ class Day05PartA(Day05, FileReaderSolution, IntCode):
         # next instructions terminates the program
         instructions = list(map(int, input_data.split(",")))
         self.load_instructions(instructions)
-        res = self.run(input_value=1)
+        self.load_input_values([1])
+        res = self.run()
         return res
 
 
@@ -25,5 +26,6 @@ class Day05PartB(Day05, FileReaderSolution, IntCode):
     def solve(self, input_data: str) -> int:
         instructions = list(map(int, input_data.split(",")))
         self.load_instructions(instructions)
-        res = self.run(5)
+        self.load_input_values([5])
+        res = self.run()
         return res

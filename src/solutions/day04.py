@@ -30,14 +30,8 @@ class Day04:
     @staticmethod
     def is_going_up(number_str: str) -> bool:
         # Validate that the numbers go up or are the same.
-        max_found = float("-inf")
-
-        for digit in number_str:
-            if int(digit) >= max_found:
-                max_found = int(digit)
-            else:
-                return False
-        return True
+        sorted_str = "".join(sorted(number_str))
+        return sorted_str == number_str
 
     @staticmethod
     def is_valid_part_a(int_input: int) -> bool:

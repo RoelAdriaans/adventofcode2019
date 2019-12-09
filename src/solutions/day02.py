@@ -1,5 +1,4 @@
 from utils.abstract import FileReaderSolution
-from typing import List
 from solutions.intcode import IntCode
 
 

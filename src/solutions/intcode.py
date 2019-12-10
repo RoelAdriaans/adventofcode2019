@@ -20,6 +20,11 @@ class IntCode:
     instructions: List[int] = []
     input_values: List[int] = []
 
+    def reset(self):
+        self.program_counter = 0
+        self.instructions: List[int] = []
+        self.input_values: List[int] = []
+
     def load_instructions(self, instructions: List[int]):
         self.program_counter = 0
         self.instructions = instructions[:]
@@ -157,6 +162,19 @@ class IntCode:
                     return res
         except ProgramFinished:
             return res
+
+    def run_multiple_output(self) -> List[int]:
+        """
+        Run the progam until a ProgramFinished error is raised, store all the outputs
+        """
+        results = []
+        try:
+            while True:
+                res = self.process_instruction()
+                if res is not None:
+                    results.append(res)
+        except ProgramFinished:
+            return results
 
     def get_register(self, location: int) -> int:
         """

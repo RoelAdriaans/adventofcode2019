@@ -42,8 +42,11 @@ class Day07:
 class Day07PartA(Day07, FileReaderSolution):
     def solve(self, input_data: str) -> int:
         instructions = list(map(int, input_data.split(",")))
-        computer = IntCode()
-        computer.load_instructions(instructions)
+        # computer = IntCode()
+        # computer.load_instructions(instructions)
+        sequence, thrust = self.get_best_sequence(instructions)
+        return thrust
+
 
 
 class Day07PartB(Day07, FileReaderSolution):

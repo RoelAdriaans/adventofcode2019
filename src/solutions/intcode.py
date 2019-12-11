@@ -1,4 +1,5 @@
 from typing import List
+from collections import deque
 
 
 class ProgramFinished(Exception):
@@ -18,12 +19,12 @@ class IntCode:
 
     program_counter = 0
     instructions: List[int] = []
-    input_values: List[int] = []
+    input_values: deque = deque([])
 
     def reset(self):
         self.program_counter = 0
         self.instructions: List[int] = []
-        self.input_values: List[int] = []
+        self.input_values = deque([])
 
     def load_instructions(self, instructions: List[int]):
         self.program_counter = 0
@@ -94,7 +95,7 @@ class IntCode:
         elif current_opcode == 3:
             # Use input
             store = self.instructions[self.program_counter + 1]
-            self.instructions[store] = self.input_values.pop()
+            self.instructions[store] = self.input_values.popleft()
             self.program_counter += 2
 
         elif current_opcode == 4:

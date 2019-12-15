@@ -7,7 +7,9 @@ class TestDay07PartA:
     def test_day07a_for_sequence(self):
         instructinons = [3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0]
         solution = Day07PartA()
-        result = solution.compute_results_for_sequence(instructinons, (4, 3, 2, 1, 0))
+        result = solution.compute_results_for_looped_sequence(
+            instructinons, (4, 3, 2, 1, 0)
+        )
         assert result == 43210
 
     @pytest.mark.parametrize(
@@ -31,7 +33,7 @@ class TestDay07PartA:
     def test_day07a_solve(self, instructions, expected_sequence, expected_thrust):
         instructions = list(map(int, instructions.split(",")))
         solution = Day07PartA()
-        sequence, thrust = solution.get_best_sequence(instructions)
+        sequence, thrust = solution.get_best_looped_sequence(0, 5, instructions)
         assert sequence == expected_sequence
         assert thrust == expected_thrust
 

@@ -25,7 +25,7 @@ class TestDay07PartB:
     def test_day07b_solve(self, instructions, expected_sequence, expected_thrust):
         instructions = list(map(int, instructions.split(",")))
         solution = Day07PartB()
-        sequence, thrust = solution.get_best_looped_sequence(instructions)
+        sequence, thrust = solution.get_best_looped_sequence(5, 10, instructions)
         assert sequence == expected_sequence
         assert thrust == expected_thrust
 

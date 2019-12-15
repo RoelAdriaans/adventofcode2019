@@ -18,8 +18,11 @@ class IntCode:
     """
 
     program_counter = 0
-    instructions: List[int] = []
-    input_values: deque = deque([])
+    instructions: List[int]
+    input_values: deque
+
+    def __init__(self):
+        self.reset()
 
     def reset(self):
         self.program_counter = 0
@@ -82,20 +85,22 @@ class IntCode:
         if current_opcode == 1:
             # Add values
             store = self.instructions[self.program_counter + 3]
-            self.instructions[store] = val_1 + val_2
+            value = val_1 + val_2
+            self.instructions[store] = value
             self.program_counter += 4
 
         elif current_opcode == 2:
             # Multiply values
             store = self.instructions[self.program_counter + 3]
-
-            self.instructions[store] = val_1 * val_2
+            value = val_1 * val_2
+            self.instructions[store] = value
             self.program_counter += 4
 
         elif current_opcode == 3:
             # Use input
             store = self.instructions[self.program_counter + 1]
-            self.instructions[store] = self.input_values.popleft()
+            value = self.input_values.popleft()
+            self.instructions[store] = value
             self.program_counter += 2
 
         elif current_opcode == 4:
@@ -159,10 +164,16 @@ class IntCode:
         try:
             while True:
                 res = self.process_instruction()
-                if res not in (0, None):
+                if res is not None:
                     return res
         except ProgramFinished:
             return res
+
+    def run_return_or_raise(self) -> int:
+        while True:
+            res = self.process_instruction()
+            if res is not None:
+                return res
 
     def run_multiple_output(self) -> List[int]:
         """

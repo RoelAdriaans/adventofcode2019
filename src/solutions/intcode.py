@@ -43,16 +43,16 @@ class IntCode:
         str_opcode = f"{current_opcode:05}"
         # We are in Parameter modes
         current_opcode = int(str_opcode[-2:])
-        param_1_position_mode = not bool(int(str_opcode[len(str_opcode) - 3]))
-        param_2_position_mode = not bool(int(str_opcode[len(str_opcode) - 4]))
+        param_1_mode = int(str_opcode[len(str_opcode) - 3])
+        param_2_mode = int(str_opcode[len(str_opcode) - 4])
 
         return (
             current_opcode,
-            param_1_position_mode,
-            param_2_position_mode,
+            param_1_mode,
+            param_2_mode,
         )
 
-    def _get_value_from_location(self, position_mode: bool, position: int) -> int:
+    def _get_value_from_location(self, position_mode: int, position: int) -> int:
         """
         If `position_mode` is True, return the value in that position
         If `position_mode` is False,
@@ -61,23 +61,22 @@ class IntCode:
             value = self.instructions[self.program_counter + position]
         except IndexError:
             value = False
-        if position_mode:
+
+        if position_mode == 0:
             try:
                 return self.instructions[value]
             except IndexError:
                 return False
-        else:
+        elif position_mode == 1:
             return value
+        else:
+            raise ValueError(f"Not supported {position_mode=}")
 
     def process_instruction(self):
         """ Process the current instruction and increate the program counter"""
-        (
-            current_opcode,
-            param_1_position_mode,
-            param_2_position_mode,
-        ) = self._parse_immediate_mode()
-        val_1 = self._get_value_from_location(param_1_position_mode, 1)
-        val_2 = self._get_value_from_location(param_2_position_mode, 2)
+        (current_opcode, param_1_mode, param_2_mode) = self._parse_immediate_mode()
+        val_1 = self._get_value_from_location(param_1_mode, 1)
+        val_2 = self._get_value_from_location(param_2_mode, 2)
 
         if current_opcode == 99:
             raise ProgramFinished
@@ -105,7 +104,7 @@ class IntCode:
 
         elif current_opcode == 4:
             # Return output
-            output = self._get_value_from_location(param_1_position_mode, 1)
+            output = self._get_value_from_location(param_1_mode, 1)
 
             self.program_counter += 2
             return output
@@ -174,19 +173,6 @@ class IntCode:
             res = self.process_instruction()
             if res is not None:
                 return res
-
-    def run_multiple_output(self) -> List[int]:
-        """
-        Run the progam until a ProgramFinished error is raised, store all the outputs
-        """
-        results = []
-        try:
-            while True:
-                res = self.process_instruction()
-                if res is not None:
-                    results.append(res)
-        except ProgramFinished:
-            return results
 
     def get_register(self, location: int) -> int:
         """

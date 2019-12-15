@@ -73,6 +73,8 @@ class Day07:
                     num_done += 1
                     if num_done == 5:
                         return last_value
+                else:
+                    last_value = result
 
             # We have done a loop, let's check if this is the bigest value
             if result is None:

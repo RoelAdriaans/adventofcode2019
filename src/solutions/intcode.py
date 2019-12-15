@@ -164,7 +164,7 @@ class IntCode:
         try:
             while True:
                 res = self.process_instruction()
-                if res is not None:
+                if res not in (0, None):
                     return res
         except ProgramFinished:
             return res

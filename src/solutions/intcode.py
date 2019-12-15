@@ -160,7 +160,7 @@ class IntCode:
         Run the IntCode computer until the output is not 0 or None, or until
         the program runs out and raises an ProgramFinished exception.
         """
-        res = None
+        res = 0
         try:
             while True:
                 res = self.process_instruction()

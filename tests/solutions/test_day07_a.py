@@ -1,9 +1,6 @@
 import pytest
-from pathlib import Path
-from solutions.intcode import IntCode
-from solutions.day07 import Day07PartA
 
-root_dir = Path(__file__).parent.parent.parent
+from solutions.day07 import Day07PartA
 
 
 class TestDay07PartA:
@@ -26,7 +23,8 @@ class TestDay07PartA:
             (
                 "3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,"
                 "1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0",
-                "10432", 65210
+                "10432",
+                65210,
             ),
         ],
     )
@@ -41,4 +39,4 @@ class TestDay07PartA:
         """ Result we got when we did the real solution """
         solution = Day07PartA()
         res = solution("day_07/day07.txt")
-        assert res == 0
+        assert res == 929800

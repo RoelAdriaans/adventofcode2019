@@ -12,5 +12,3 @@ class TestIntcode:
             intcode.run()
 
         assert "Unknown opcode: 55" in str(excinfo.value)
-
-

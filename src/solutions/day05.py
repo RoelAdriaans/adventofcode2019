@@ -1,5 +1,5 @@
 from utils.abstract import FileReaderSolution
-from typing import List
+from utils.advent_utils import string_to_list_of_ints
 from solutions.intcode import IntCode
 
 
@@ -15,7 +15,7 @@ class Day05PartA(Day05, FileReaderSolution, IntCode):
     def solve(self, input_data: str) -> int:
         # Technically not 100% correct, when res is non zero, if should check that the
         # next instructions terminates the program
-        instructions = list(map(int, input_data.split(",")))
+        instructions = string_to_list_of_ints(input_data)
         self.load_instructions(instructions)
         self.load_input_values([1])
         res = self.run()
@@ -24,7 +24,7 @@ class Day05PartA(Day05, FileReaderSolution, IntCode):
 
 class Day05PartB(Day05, FileReaderSolution, IntCode):
     def solve(self, input_data: str) -> int:
-        instructions = list(map(int, input_data.split(",")))
+        instructions = string_to_list_of_ints(input_data)
         self.load_instructions(instructions)
         self.load_input_values([5])
         res = self.run()

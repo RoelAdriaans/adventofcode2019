@@ -1,10 +1,7 @@
-import pytest
-
 from solutions.day08 import Day08PartA
 
 
 class TestDay08PartA:
-
     def test_get_digits_per_layer(self):
         """ Get the number of digits per layer"""
         solution = Day08PartA()

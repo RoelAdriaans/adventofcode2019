@@ -1,4 +1,3 @@
-import pytest
 from solutions.intcode import IntCode
 from solutions.day09 import Day09PartA
 

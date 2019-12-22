@@ -1,9 +1,11 @@
 from utils.abstract import FileReaderSolution
-from utils.advent_utils import string_to_list_of_ints
+from typing import List
 
 
 class Day08:
-    frames = []
+    frames: List[str]
+    width = 0
+    height = 0
 
     def load_image(self, image_data: str, width: int, height: int):
         """ Load an image from `image_data`, with `width` and `height` dimensions"""
@@ -13,10 +15,13 @@ class Day08:
             for i in range(0, len(image_data), frame_size)
         ]
 
+        self.width = width
+        self.height = height
+
     def count_number_per_frame(self, number: int, frame: int) -> int:
         """ Count the number of times `number` is in frame `frame """
-        number = str(number)
-        return self.frames[frame].count(number)
+        needle = str(number)
+        return self.frames[frame].count(needle)
 
     def layer_with_fewest_digit(self, number_to_find: int):
         """ Find the layer with the fewest corrences of `number_to_find` """
@@ -24,6 +29,31 @@ class Day08:
         for x in range(0, len(self.frames)):
             found[x] = self.count_number_per_frame(number=number_to_find, frame=x)
         return min(found, key=found.get)
+
+    @staticmethod
+    def _compute_per_pixel(pixels: List[int]) -> int:
+        for pixel in pixels:
+            if pixel == 2:
+                continue
+            else:
+                return pixel
+        return 0
+
+    def get_computed_image(self):
+        """ Compute the image"""
+        resulting_image = []
+        for x in range(0, len(self.frames[0])):
+            pixels = [int(frame[x]) for frame in self.frames]
+            result = self._compute_per_pixel(pixels)
+            resulting_image.append(result)
+        return resulting_image
+
+    def printable_image(self, image_data: List[int]):
+        lines = [
+            "".join(map(str, image_data[i : i + self.width]))
+            for i in range(0, len(image_data), self.width)
+        ]
+        return "\n".join(lines)
 
 
 class Day08PartA(Day08, FileReaderSolution):
@@ -37,5 +67,9 @@ class Day08PartA(Day08, FileReaderSolution):
 
 
 class Day08PartB(Day08, FileReaderSolution):
-    def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+    def solve(self, input_data: str) -> str:
+        self.load_image(input_data, width=25, height=6)
+        image = self.get_computed_image()
+        printable = self.printable_image(image)
+        result = printable.replace("0", " ").replace("1", "■")
+        return result

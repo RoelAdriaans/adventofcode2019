@@ -39,22 +39,24 @@ class IntCode:
     def load_input_values(self, input_values: List[int]):
         self.input_values.extend(input_values)
 
-    def _parse_immediate_mode(self) -> Tuple[int, int, int]:
+    def _parse_immediate_mode(self) -> Tuple[int, int, int, int]:
         current_opcode = self.instructions[self.program_counter]
         opcode_length = len(str(current_opcode))
-        if opcode_length == 5:
-            raise ValueError("Opcode longer then 5?!!?")
+        if opcode_length >= 6:
+            raise ValueError("Opcode 6 or longer!??!!?")
         # Let's zeropad the string to make it easier to process
         str_opcode = f"{current_opcode:05}"
         # We are in Parameter modes
         current_opcode = int(str_opcode[-2:])
         param_1_mode = int(str_opcode[len(str_opcode) - 3])
         param_2_mode = int(str_opcode[len(str_opcode) - 4])
+        param_3_mode = int(str_opcode[len(str_opcode) - 5])
 
         return (
             current_opcode,
             param_1_mode,
             param_2_mode,
+            param_3_mode,
         )
 
     def _get_value_from_location(self, position_mode: int, position: int) -> int:
@@ -80,41 +82,64 @@ class IntCode:
         else:
             raise ValueError(f"Not supported {position_mode=}")
 
+    def _get_store_position(self, position_mode: int, position: int) -> int:
+        """ position where we need to store the result of an output """
+
+        if position_mode == 0:
+            # Position Mode, this is the default mode.
+            # Location is program_counter + offset
+            return self.instructions[self.program_counter + position]
+        elif position_mode == 1:
+            # Advent of Code, day 5:
+            # Parameters that an instruction writes to will never be in immediate mode.
+            return False
+        elif position_mode == 2:
+            # Relative Mode
+            value = self.instructions[self.program_counter + position]
+            location = value + self.relative_base
+            return location
+        else:
+            raise ValueError(f"Not supported {position_mode=}")
+
     def process_instruction(self):
         """ Process the current instruction and increate the program counter"""
-        (current_opcode, param_1_mode, param_2_mode) = self._parse_immediate_mode()
+        (
+            current_opcode,
+            param_1_mode,
+            param_2_mode,
+            param_3_mode,
+        ) = self._parse_immediate_mode()
         val_1 = self._get_value_from_location(param_1_mode, 1)
         val_2 = self._get_value_from_location(param_2_mode, 2)
+
+        # Store_x - where x is the number of operads for a function.
+        # ag, multiply and store is multiple, two values and the 3th is store: store_3
+        store_1 = self._get_store_position(param_1_mode, 1)
+        store_3 = self._get_store_position(param_3_mode, 3)
 
         if current_opcode == 99:
             raise ProgramFinished
 
         if current_opcode == 1:
             # Add values
-            # store = self.instructions[self.program_counter + 3]
             value = val_1 + val_2
-            self.instructions[val_3] = value
+            self.instructions[store_3] = value
             self.program_counter += 4
 
         elif current_opcode == 2:
             # Multiply values
-            # store = self.instructions[self.program_counter + 3]
             value = val_1 * val_2
-            self.instructions[val_3] = value
+            self.instructions[store_3] = value
             self.program_counter += 4
 
         elif current_opcode == 3:
             # Use input
-            # store = self.instructions[self.program_counter + 1]
-            # store = self._get_value_from_location(param_1_mode, 1)
             value = self.input_values.popleft()
-            self.instructions[val_1] = value
+            self.instructions[store_1] = value
             self.program_counter += 2
 
         elif current_opcode == 4:
             # Return output
-            # output = self._get_value_from_location(param_1_mode, 1)
-
             self.program_counter += 2
             return val_1
 
@@ -142,9 +167,9 @@ class IntCode:
             # Otherwise, it stores 0.
 
             if val_1 < val_2:
-                self.instructions[val_3] = 1
+                self.instructions[store_3] = 1
             else:
-                self.instructions[val_3] = 0
+                self.instructions[store_3] = 0
             self.program_counter += 4
 
         elif current_opcode == 8:
@@ -153,9 +178,9 @@ class IntCode:
             # Otherwise, it stores 0.
 
             if val_1 == val_2:
-                self.instructions[val_3] = 1
+                self.instructions[store_3] = 1
             else:
-                self.instructions[val_3] = 0
+                self.instructions[store_3] = 0
             self.program_counter += 4
 
         elif current_opcode == 9:
@@ -196,7 +221,6 @@ class IntCode:
                 result.append(res)
             except ProgramFinished:
                 return result
-
 
     def get_register(self, location: int) -> int:
         """

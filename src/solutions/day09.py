@@ -1,10 +1,11 @@
 from utils.abstract import FileReaderSolution
+from utils.advent_utils import string_to_list_of_ints
 from solutions.intcode import IntCode
 
 
 class Day09:
     def run_computer(self, input_data: str, input_value: int) -> int:
-        instructions = list(map(int, input_data.split(",")))
+        instructions = string_to_list_of_ints(input_data)
         intcode = IntCode()
         intcode.load_instructions(instructions)
         intcode.load_input_values([input_value])

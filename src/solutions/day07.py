@@ -1,4 +1,5 @@
 from utils.abstract import FileReaderSolution
+from utils.advent_utils import string_to_list_of_ints
 from solutions.intcode import IntCode, ProgramFinished
 from typing import List, Tuple, Union
 import itertools
@@ -57,13 +58,13 @@ class Day07:
 
 class Day07PartA(Day07, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        instructions = list(map(int, input_data.split(",")))
+        instructions = string_to_list_of_ints(input_data)
         sequence, thrust = self.get_best_looped_sequence(0, 5, instructions)
         return thrust
 
 
 class Day07PartB(Day07, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        instructions = list(map(int, input_data.split(",")))
+        instructions = string_to_list_of_ints(input_data)
         sequence, thrust = self.get_best_looped_sequence(5, 10, instructions)
         return thrust

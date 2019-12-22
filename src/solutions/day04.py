@@ -1,4 +1,5 @@
 from utils.abstract import FileReaderSolution
+from utils.advent_utils import string_to_list_of_ints
 
 
 class Day04:
@@ -58,13 +59,13 @@ class Day04:
 
 class Day04PartA(Day04, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        lower, upper = map(int, input_data.split("-"))
+        lower, upper = string_to_list_of_ints(input_data, "-")
         counter = sum(self.is_valid_part_a(x) for x in range(lower, upper + 1))
         return counter
 
 
 class Day04PartB(Day04, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        lower, upper = map(int, input_data.split("-"))
+        lower, upper = string_to_list_of_ints(input_data, "-")
         counter = sum(self.is_valid_part_b(x) for x in range(lower, upper + 1))
         return counter

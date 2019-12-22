@@ -1,6 +1,7 @@
 from utils.abstract import FileReaderSolution
 from solutions.intcode import IntCode
 
+
 class Day09:
     pass
 
@@ -14,6 +15,7 @@ class Day09PartA(Day09, FileReaderSolution):
 
         result = intcode.run_until_finished()
         return result[0]
+
 
 class Day09PartB(Day09, FileReaderSolution):
     def solve(self, input_data: str) -> int:

@@ -37,9 +37,12 @@ class TestDay10PartA:
         assert angle_1_2 == angle_1_3
 
         # Check the distance:
+        distance_1_2 = solution._get_distance(astroid_1, astroid_2)
+        distance_1_3 = solution._get_distance(astroid_1, astroid_3)
 
-
-
+        # Validate that 1_3 is bigger then 1_2
+        # Units to not mather, only distance
+        assert distance_1_3 > distance_1_2
 
     @pytest.mark.parametrize(
         ("input_data", "best_location", "expected_result"),
@@ -75,6 +78,10 @@ class TestDay10PartA:
         # Find the best place
         best_detected = solution.find_best_spot()
         assert best_detected == expected_result
+
+        best_astroid, _ = solution.get_best_astroid()
+        assert best_astroid == Astroid(x=best_location[0], y=best_location[1])
+
 
     def test_day10a_data(self):
         """ Result we got when we did the real solution """

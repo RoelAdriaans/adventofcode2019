@@ -39,7 +39,7 @@ class IntCode:
     def load_input_values(self, input_values: List[int]):
         self.input_values.extend(input_values)
 
-    def _parse_immediate_mode(self) -> Tuple[int, int, int, int]:
+    def _parse_current_opcode(self) -> Tuple[int, List[int]]:
         current_opcode = self.instructions[self.program_counter]
         opcode_length = len(str(current_opcode))
         if opcode_length >= 6:
@@ -48,21 +48,21 @@ class IntCode:
         str_opcode = f"{current_opcode:05}"
         # We are in Parameter modes
         current_opcode = int(str_opcode[-2:])
-        param_1_mode = int(str_opcode[len(str_opcode) - 3])
-        param_2_mode = int(str_opcode[len(str_opcode) - 4])
-        param_3_mode = int(str_opcode[len(str_opcode) - 5])
+        modes = [int(str_opcode[len(str_opcode) - place]) for place in (3, 4, 5)]
 
-        return (
-            current_opcode,
-            param_1_mode,
-            param_2_mode,
-            param_3_mode,
-        )
+        return current_opcode, modes
 
     def _get_value_from_location(self, position_mode: int, position: int) -> int:
         """
-        If `position_mode` is True, return the value in that position
-        If `position_mode` is False,
+        If `position_mode` is 0, use Use position mode,
+        Return value at the location defined by program counter + position.
+
+        If `position_mode` is 1, use immediate mode.
+        Return the value at program counter + position.
+
+        If `position_mode` is 2, use relative posision mode.
+        Return value at the location defined by program counter + position +
+        relative base.
         """
         try:
             value = self.instructions[self.program_counter + position]
@@ -83,7 +83,19 @@ class IntCode:
             raise ValueError(f"Not supported {position_mode=}")
 
     def _get_store_position(self, position_mode: int, position: int) -> int:
-        """ position where we need to store the result of an output """
+        """
+        Return the position in memory where we need to store a value.
+        This function does not store the value itselve!
+
+        If `position_mode` is 0, use Use position mode,
+        Return location defined at the location by program counter + position.
+
+        If `position_mode` is 1, Return False. Not used according to Day 5.
+
+        If `position_mode` is 0, use Use relative position mode,
+        Return location defined at the location by program counter + position, and add
+        the relative base location.
+        """
 
         if position_mode == 0:
             # Position Mode, this is the default mode.
@@ -102,20 +114,15 @@ class IntCode:
             raise ValueError(f"Not supported {position_mode=}")
 
     def process_instruction(self):
-        """ Process the current instruction and increate the program counter"""
-        (
-            current_opcode,
-            param_1_mode,
-            param_2_mode,
-            param_3_mode,
-        ) = self._parse_immediate_mode()
-        val_1 = self._get_value_from_location(param_1_mode, 1)
-        val_2 = self._get_value_from_location(param_2_mode, 2)
+        """ Process the current instruction and increase the program counter"""
+        (current_opcode, position_modes) = self._parse_current_opcode()
+        val_1 = self._get_value_from_location(position_modes[0], 1)
+        val_2 = self._get_value_from_location(position_modes[1], 2)
 
         # Store_x - where x is the number of operads for a function.
         # ag, multiply and store is multiple, two values and the 3th is store: store_3
-        store_1 = self._get_store_position(param_1_mode, 1)
-        store_3 = self._get_store_position(param_3_mode, 3)
+        store_1 = self._get_store_position(position_modes[0], 1)
+        store_3 = self._get_store_position(position_modes[2], 3)
 
         if current_opcode == 99:
             raise ProgramFinished

@@ -1,11 +1,18 @@
 from utils.abstract import FileReaderSolution
-from typing import List, NamedTuple, Set, Tuple, Union
+from typing import List, NamedTuple, Set, Tuple, Dict
 import math
+from collections import defaultdict, OrderedDict
 
 
 class Astroid(NamedTuple):
     x: int
     y: int
+
+
+class GridInfo(NamedTuple):
+    astroid: Astroid
+    angle: float
+    distance: float
 
 
 class Day10:
@@ -48,7 +55,6 @@ class Day10:
         """ Compute the distance between two Astroids """
         a, b = astroid_1.x, astroid_1.y
         x, y = astroid_2.x, astroid_2.y
-        res = abs(a - x) + abs(b - y)
         euclidean_distance = math.sqrt((a - x) ** 2 + (b - y) ** 2)
         return euclidean_distance
 
@@ -84,59 +90,32 @@ class Day10:
         best_astroid = max(locations, key=locations.get)
         return best_astroid, locations[best_astroid]
 
-    def run_laser(self, location: Astroid) -> Union[bool, Astroid]:
-        """ Run the laser on map.
-        `location` is the position we're on.
-        Return false when no Astroid was hit, true otherwise
-        """
-        # First, find a target that is on the same degree:
-        targets_in_range: Set[Astroid] = set()
-
+    def calculate_angles(self, location: Astroid):
+        """ Create a dict with all the angles for the asteroids and the distance"""
+        angles: Dict[float, List] = defaultdict(list)
         for astroid in self.astroids:
-            angle = round(self._get_angle(location, astroid))
-            if angle == self.laser_direction:
-                targets_in_range.add(astroid)
+            angle = self._get_angle(location, astroid)
+            distance = self._get_distance(location, astroid)
+            info = GridInfo(astroid=astroid, angle=angle, distance=distance)
+            angles[angle].append(info)
+        return angles
 
-        if not targets_in_range:
-            return False
-
-        # We can only shoot one target
-        # Get the closest target
-        distances = {
-            astroid: self._get_distance(location, astroid)
-            for astroid in targets_in_range
-        }
-        closest_target = min(distances, key=distances.get)
-
-        # Let's kill this done!
-        self.astroids_destroyed.append(closest_target)
-        self.astroids.remove(closest_target)
-
-        # Return the last one we've shot
-        return closest_target
-
-    def rotate_laser(self):
-        """ Rotate the laser one degree """
-        self.laser_direction += 1
-        if self.laser_direction >= 361:
-            self.laser_direction = 0
-
-    def rotate_and_shoot_until_hit(self, location: Astroid):
-        """ Shoot and rotate until we hit something """
-        while True:
-            hit_astroid = self.run_laser(location)
-            # Always rotate laser after shooting, otherwise in the next try we hit
-            # The astroid behing it
-            self.rotate_laser()
-            if hit_astroid:
-                return hit_astroid
-
-    def shoot_and_rotate(self, location: Astroid, n: int = 200):
+    def remove_astroid(self, location: Astroid, n=200):
         """ Shoot until we have reached `n` targets"""
-        while len(self.astroids_destroyed) < n:
-            self.run_laser(location=location)
-            self.rotate_laser()
-        return self.astroids_destroyed[n-1]
+        angle_information = self.calculate_angles(location)
+        sorted_angles = sorted(angle_information)
+
+        # We start at index with 90 degrees
+        start_pos = sorted_angles.index(90)
+        angles = sorted_angles[start_pos:] + sorted_angles[:start_pos]
+        while len(self.astroids_destroyed) <= n:
+            for angle in angles:
+                # Get the closest in this angle
+                astroids = angle_information[angle]
+                if astroids:
+                    closest = min(astroids, key=lambda x: x.distance)
+                    astroids.remove(closest)
+                    self.astroids_destroyed.append(closest.astroid)
 
 
 class Day10PartA(Day10, FileReaderSolution):
@@ -148,4 +127,9 @@ class Day10PartA(Day10, FileReaderSolution):
 
 class Day10PartB(Day10, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+        self.create_map(input_data)
+        best_astroid, num_hits = self.get_best_astroid()
+        self.remove_astroid(best_astroid, n=200)
+        astroid_destroied = self.astroids_destroyed[199]
+
+        return astroid_destroied.x * 100 + astroid_destroied.y

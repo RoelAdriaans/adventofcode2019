@@ -82,7 +82,6 @@ class TestDay10PartA:
         best_astroid, _ = solution.get_best_astroid()
         assert best_astroid == Astroid(x=best_location[0], y=best_location[1])
 
-
     def test_day10a_data(self):
         """ Result we got when we did the real solution """
         solution = Day10PartA()

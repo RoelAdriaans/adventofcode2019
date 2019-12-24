@@ -19,9 +19,6 @@ class Day10:
     astroids: List[Astroid]
     astroids_destroyed: List[Astroid]
 
-    # Our laser starts by pointing up
-    laser_direction: float = 90
-
     def create_map(self, input_data: str):
         """ Create a map from input_data. """
         self.astroids = []
@@ -32,13 +29,6 @@ class Day10:
                     self.astroids.append(Astroid(x=x, y=y))
                 elif point == "X":
                     print(x, y)
-
-    def _astroid_on_location(self, x: int, y: int) -> bool:
-        """ Is there an astriod on  location (x, y) ?"""
-        for astroid in self.astroids:
-            if astroid.x == x and astroid.y == y:
-                return True
-        return False
 
     @staticmethod
     def _get_angle(astroid_1: Astroid, astroid_2: Astroid) -> float:

@@ -18,11 +18,6 @@ class TestDay10PartA:
         assert len(solution.astroids) == 10
         assert solution.astroids[0] == Astroid(x=1, y=0)
 
-        assert solution._astroid_on_location(1, 0) is True
-        assert solution._astroid_on_location(0, 0) is False
-        assert solution._astroid_on_location(4, 0) is True
-        assert solution._astroid_on_location(3, 4) is True
-
     def test_get_angle(self):
         solution = Day10PartA()
         astroid_1 = Astroid(3, 4)  # Our base astroid

@@ -21,9 +21,6 @@ class TestDay10PartB:
         best_spot = solution.get_best_astroid()[0]
         assert best_spot == Astroid(x=8, y=3)
 
-        # We start going up:
-        assert solution.laser_direction == 90
-
         solution.remove_astroid(best_spot, n=3)
         assert solution.astroids_destroyed[0] == Astroid(x=8, y=1)
         assert solution.astroids_destroyed[1] == Astroid(x=9, y=0)

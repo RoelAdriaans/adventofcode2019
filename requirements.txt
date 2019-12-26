@@ -2,6 +2,7 @@ anytree
 black
 Click
 cookiecutter
+matplotlib
 pytest
 pytest-cov
 pytest-xdist

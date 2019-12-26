@@ -26,6 +26,16 @@ class Moon:
             f"vel=<x={self.dx:3}, y={self.dy:3}, z={self.dz:3}>"
         )
 
+    def __eq__(self, other: "Moon") -> bool:
+        return (
+            (self.x == other.x)
+            and (self.y == other.y)
+            and (self.z == other.z)
+            and (self.dx == other.dx)
+            and (self.dy == other.dy)
+            and (self.dz == other.dz)
+        )
+
     def apply_movement(self):
         """ Move the Moon according to the internal speeds """
         self.x += self.dx
@@ -71,8 +81,11 @@ class Moon:
         return self.get_kinetic_energy() * self.get_potential_energy()
 
 
-class Day12:
+class Galaxy:
     moons: List[Moon]
+
+    def __eq__(self, other: "Galaxy") -> bool:
+        return self.moons == other.moons
 
     def create_moons(self, input_str: str):
         self.moons = []
@@ -118,13 +131,30 @@ class Day12:
         return sum(moon.get_total_energy() for moon in self.moons)
 
 
+class Day12:
+    pass
+
+
 class Day12PartA(Day12, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        self.create_moons(input_data)
-        self.step_multi(1000)
-        return self.get_total_energy()
+        galaxy = Galaxy()
+        galaxy.create_moons(input_data)
+        galaxy.step_multi(1000)
+        return galaxy.get_total_energy()
 
 
 class Day12PartB(Day12, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+        compare_galaxy = Galaxy()
+        compare_galaxy.create_moons(input_data)
+
+        galaxy = Galaxy()
+        galaxy.create_moons(input_data)
+        i = 1
+        while True:
+
+            galaxy.step()
+            if galaxy == compare_galaxy:
+                return i
+            else:
+                i += 1

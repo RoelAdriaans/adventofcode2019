@@ -145,7 +145,7 @@ class IntCode:
         store_1 = self._get_store_position(position_modes[0], 1)
         store_3 = self._get_store_position(position_modes[2], 3)
 
-        if current_opcode == Opcode.END_PROGRAM.value:
+        if current_opcode == Opcode.END_PROGRAM:
             raise ProgramFinished
 
         if current_opcode == Opcode.ADD:

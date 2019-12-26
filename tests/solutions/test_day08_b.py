@@ -1,4 +1,5 @@
 import pytest
+
 from solutions.day08 import Day08PartB
 
 

@@ -1,8 +1,9 @@
+import itertools
+from typing import List, Tuple, Union
+
+from solutions.intcode import IntCode, ProgramFinished
 from utils.abstract import FileReaderSolution
 from utils.advent_utils import string_to_list_of_ints
-from solutions.intcode import IntCode, ProgramFinished
-from typing import List, Tuple, Union
-import itertools
 
 
 class Day07:

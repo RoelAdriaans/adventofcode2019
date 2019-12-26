@@ -3,7 +3,6 @@ from enum import IntEnum
 from typing import NamedTuple
 
 import matplotlib.pyplot as plt  # type: ignore
-
 from solutions.intcode import IntCode, ProgramFinished
 from utils.abstract import FileReaderSolution
 from utils.advent_utils import string_to_list_of_ints

@@ -1,5 +1,6 @@
-from utils.abstract import FileReaderSolution
 from typing import List
+
+from utils.abstract import FileReaderSolution
 
 
 class Day08:

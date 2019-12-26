@@ -1,6 +1,6 @@
-from collections import deque, defaultdict
+from collections import defaultdict, deque
 from enum import IntEnum
-from typing import List, DefaultDict, Tuple
+from typing import DefaultDict, List, Tuple
 
 
 class ProgramFinished(Exception):

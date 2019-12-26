@@ -127,7 +127,8 @@ class Day11PartA(Day11, FileReaderSolution):
 
 
 class Day11PartB(Day11, FileReaderSolution):
-    def print_grid(self):
+    def plot_grid(self):
+        """ Plot the grid using matplotlib"""
         x_points = [point.x for point, color in self.hull.items()]
         y_points = [point.y for point, color in self.hull.items()]
         min_x = min(x_points)
@@ -141,9 +142,22 @@ class Day11PartB(Day11, FileReaderSolution):
         plt.ylabel("some numbers")
         plt.show()
 
+    def show(self):
+        """ Plot the grid using Ascii"""
+        positions = [
+            (point.x, point.y) for point, color in self.hull.items() if color == 1
+        ]
+        x_min = min(x for (x, y) in positions)
+        x_max = max(x for (x, y) in positions)
+        y_min = min(y for x, y in positions)
+        y_max = max(y for x, y in positions)
+
+        output = []
+        for y in reversed(range(y_min, y_max + 1)):
+            row = ["*" if (x, y) in positions else " " for x in range(x_min, x_max + 1)]
+            output.append("".join(row))
+        return "\n".join(output)
+
     def solve(self, input_data: str) -> str:
         self.run_computer(input_data, start_color=1)
-        self.print_grid()
-        # This will print an image, but we cannot test this image easely.
-        # To to this we just return the text hardcoded for my input.
-        return "BCKFPCRA"
+        return self.show()

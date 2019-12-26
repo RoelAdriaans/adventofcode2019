@@ -60,6 +60,9 @@ class IntCode:
     def load_input_values(self, input_values: List[int]):
         self.input_values.extend(input_values)
 
+    def set_input_value(self, input_values: List[int]):
+        self.input_values = deque(input_values)
+
     def _parse_current_opcode(self) -> Tuple[int, List[int]]:
         current_opcode = self.instructions[self.program_counter]
         opcode_length = len(str(current_opcode))

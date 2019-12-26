@@ -3,6 +3,7 @@ black
 Click
 cookiecutter
 matplotlib
+numpy
 pytest
 pytest-cov
 pytest-xdist

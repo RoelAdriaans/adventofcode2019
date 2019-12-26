@@ -1,6 +1,8 @@
-from utils.abstract import FileReaderSolution
-from typing import List
 from itertools import combinations
+from typing import List, Set, Tuple
+
+import numpy as np  # type: ignore
+from utils.abstract import FileReaderSolution
 
 
 class Moon:
@@ -26,7 +28,7 @@ class Moon:
             f"vel=<x={self.dx:3}, y={self.dy:3}, z={self.dz:3}>"
         )
 
-    def __eq__(self, other: "Moon") -> bool:
+    def __eq__(self, other) -> bool:
         return (
             (self.x == other.x)
             and (self.y == other.y)
@@ -50,13 +52,13 @@ class Moon:
          """
         input_str = input_str.replace("<", "").replace(">", "")
         parts = input_str.split(",")
-        moon = {}
+        moon_data = {}
         for part in parts:
-            part = part.split("=")
-            moon_id = part[0].strip()
-            moon[moon_id] = int(part[1])
+            axis_part = part.split("=")
+            moon_id = axis_part[0].strip()
+            moon_data[moon_id] = int(axis_part[1])
 
-        moon = Moon(**moon)
+        moon = Moon(**moon_data)
         return moon
 
     def get_potential_energy(self) -> int:
@@ -84,7 +86,7 @@ class Moon:
 class Galaxy:
     moons: List[Moon]
 
-    def __eq__(self, other: "Galaxy") -> bool:
+    def __eq__(self, other) -> bool:
         return self.moons == other.moons
 
     def create_moons(self, input_str: str):
@@ -128,6 +130,7 @@ class Galaxy:
             self.step()
 
     def get_total_energy(self) -> int:
+        """ Return the total energy of all the Moons in the system"""
         return sum(moon.get_total_energy() for moon in self.moons)
 
 
@@ -144,17 +147,46 @@ class Day12PartA(Day12, FileReaderSolution):
 
 
 class Day12PartB(Day12, FileReaderSolution):
+    @staticmethod
+    def return_one_var(galaxy: Galaxy, var: str) -> Tuple[int, ...]:
+        """ Create a tuple with the Position and Velocity values for `var` """
+        vardx = f"d{var}"
+        values = tuple([getattr(moon, var) for moon in galaxy.moons]) + tuple(
+            [getattr(moon, vardx) for moon in galaxy.moons]
+        )
+        return values
+
+    def find_returning(self, galaxy: Galaxy, var: str) -> int:
+        """ Step over the galaxy movements until we find a position we seen before, for
+        a single variable, `var`. This can be `x`, `y` or `z`.
+
+        :return The number is steps it took before we reached the initial position
+        """
+
+        i = 0
+        visited: Set[Tuple] = set()
+        while True:
+            values = self.return_one_var(galaxy, var)
+            if values in visited:
+                return i
+
+            visited.add(values)
+            galaxy.step()
+            i += 1
+
     def solve(self, input_data: str) -> int:
         compare_galaxy = Galaxy()
         compare_galaxy.create_moons(input_data)
 
         galaxy = Galaxy()
         galaxy.create_moons(input_data)
-        i = 1
-        while True:
 
-            galaxy.step()
-            if galaxy == compare_galaxy:
-                return i
-            else:
-                i += 1
+        # Check the repeating values for X, Y, Z, for the position and the velocity
+        repeating_x = self.find_returning(galaxy, "x")
+        repeating_y = self.find_returning(galaxy, "y")
+        repeating_z = self.find_returning(galaxy, "z")
+
+        # Find the lowest common multiple for all the axis
+        repeating = np.lcm.reduce([repeating_x, repeating_y, repeating_z])
+
+        return repeating

@@ -1,5 +1,6 @@
-import pytest
 from collections import Counter
+
+import pytest
 
 from solutions.day11 import Day11PartA, Direction, Robot, RotateDirection
 

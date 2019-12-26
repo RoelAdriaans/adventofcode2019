@@ -1,7 +1,8 @@
-from utils.abstract import FileReaderSolution
-from typing import List, NamedTuple, Set, Tuple, Dict
 import math
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict, defaultdict
+from typing import Dict, List, NamedTuple, Set, Tuple
+
+from utils.abstract import FileReaderSolution
 
 
 class Astroid(NamedTuple):

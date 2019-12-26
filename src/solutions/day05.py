@@ -1,6 +1,6 @@
+from solutions.intcode import IntCode
 from utils.abstract import FileReaderSolution
 from utils.advent_utils import string_to_list_of_ints
-from solutions.intcode import IntCode
 
 
 class ProgramFinished(Exception):

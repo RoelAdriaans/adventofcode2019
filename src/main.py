@@ -1,7 +1,6 @@
 from typing import Tuple
 
 import click
-
 from solutions import day01, day11
 
 modules = [

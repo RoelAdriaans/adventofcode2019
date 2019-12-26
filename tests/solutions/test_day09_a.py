@@ -1,5 +1,5 @@
-from solutions.intcode import IntCode
 from solutions.day09 import Day09PartA
+from solutions.intcode import IntCode
 
 
 class TestDay09PartA:

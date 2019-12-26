@@ -1,5 +1,5 @@
-from utils.abstract import FileReaderSolution
 from solutions.intcode import IntCode
+from utils.abstract import FileReaderSolution
 
 
 class Day02:

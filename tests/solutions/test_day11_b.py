@@ -6,4 +6,14 @@ class TestDay11PartB:
         """ Result we got when we did the real solution """
         solution = Day11PartB()
         res = solution("day_11/day11.txt")
-        assert res == "BCKFPCRA"
+        output = [
+            "***   **  *  * **** ***   **  ***   ** ",
+            "*  * *  * * *  *    *  * *  * *  * *  *",
+            "***  *    **   ***  *  * *    *  * *  *",
+            "*  * *    * *  *    ***  *    ***  ****",
+            "*  * *  * * *  *    *    *  * * *  *  *",
+            "***   **  *  * *    *     **  *  * *  *",
+        ]
+        expected_output = "\n".join(output)
+        # Result is BCKFPCRA
+        assert res == expected_output

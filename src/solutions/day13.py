@@ -1,9 +1,10 @@
-from utils.abstract import FileReaderSolution
-from solutions.intcode import IntCode, ProgramFinished
-from utils.advent_utils import string_to_list_of_ints
-from enum import IntEnum
 from collections import defaultdict
+from enum import IntEnum
 from typing import List
+
+from solutions.intcode import IntCode, ProgramFinished
+from utils.abstract import FileReaderSolution
+from utils.advent_utils import string_to_list_of_ints
 
 
 class Tile(IntEnum):
@@ -18,17 +19,18 @@ class Tile(IntEnum):
         if tile == Tile.EMPTY:
             return " "
         elif tile == Tile.WALL:
-            return "#"
+            return "░"
         elif tile == Tile.BLOCK:
             return "*"
         elif tile == Tile.PADDLE:
-            return "-"
+            return "▁"
         elif tile == Tile.BALL:
             return "O"
 
 
 class Day13:
     screen: defaultdict
+    score: int
 
     def show_screen(self):
         """
@@ -45,10 +47,10 @@ class Day13:
         """
         max_y = max([point[1] for point in self.screen.keys()])
         max_x = max([point[0] for point in self.screen.keys()])
-        grid = []
-        for y in range(0, max_y):
+        grid = [f"Score: {self.score}"]
+        for y in range(0, max_y + 1):
             row = []
-            for x in range(0, max_x):
+            for x in range(0, max_x + 1):
                 row.append(Tile.show(self.screen[x, y]))
             grid.append("".join(row))
         return "\n".join(grid)
@@ -63,7 +65,9 @@ class Day13:
 
     def run_arcade(self, input_data: str, free_to_play=False) -> int:
         self.screen = defaultdict(int)
-        score = 0
+        self.score = 0
+        tile_obj = None
+
         instructions = string_to_list_of_ints(input_data)
         if free_to_play:
             # Is we allow free to play, Set instruction 0 to 2
@@ -79,12 +83,18 @@ class Day13:
                 y = intcode.run_return_or_raise()
                 tile = intcode.run_return_or_raise()
                 if x == -1 and y == 0:
-                    score = tile
+                    self.score = tile
                 else:
                     tile_obj = Tile(tile)
                     self.draw_tile(x, y, tile_obj)
-                # if free_to_play:
-                #     print(self.show_screen())
+                if free_to_play and tile_obj == Tile.PADDLE:
+                    pass
+                    # Uncommit these lines to print the game progress
+                    # from time import sleep
+                    #
+                    # sleep(0.01)
+                    # print(chr(27) + "[2J")
+                    # print(self.show_screen())
 
                 # Compute there the ball is, and put the joystick to the right side
                 ball = self.get_location_for_tiles(Tile.BALL)
@@ -103,7 +113,7 @@ class Day13:
                 intcode.set_input_value([direction])
 
         except ProgramFinished:
-            return score
+            return self.score
 
 
 class Day13PartA(Day13, FileReaderSolution):

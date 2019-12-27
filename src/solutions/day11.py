@@ -153,7 +153,7 @@ class Day11PartB(Day11, FileReaderSolution):
 
         output = []
         for y in reversed(range(y_min, y_max + 1)):
-            row = ["*" if (x, y) in positions else " " for x in range(x_min, x_max + 1)]
+            row = ["░" if (x, y) in positions else " " for x in range(x_min, x_max + 1)]
             output.append("".join(row))
         return "\n".join(output)
 

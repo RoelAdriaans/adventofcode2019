@@ -33,7 +33,7 @@ def main(module):
         class_to_run = found_item[0]
         class_instance = class_to_run()
         res = class_instance(filename)
-        print(f"Result for {filename} -> {res}")
+        print(f"Result for {filename}:\n{res}")
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ import math
 from collections import defaultdict, Counter
 from typing import List, NamedTuple, Dict
 from utils.abstract import FileReaderSolution
+from dataclasses import dataclass
 
 
 class Chemical(NamedTuple):
@@ -38,6 +39,19 @@ class Recipe(NamedTuple):
 
         new_recipe = Recipe(inputs=input_chemicals, output=output_chemical)
         return new_recipe
+
+
+@dataclass
+class Node:
+    name: str
+    edges: list
+
+    def __init__(self, name: str):
+        self.name = name
+        self.edges = []
+
+    def add_edge(self, node: "Node"):
+        self.edges.append(node)
 
 
 class NanoFactory:
@@ -76,25 +90,66 @@ class NanoFactory:
         :param outputs:
         :return:
         """
-        for chemical, num in required.copy().items():
-            required_for_chemical = self._get_requirement_for_one(chemical, num)
-            for name, qty in required_for_chemical.items():
-                required[name] = required.get(name, 0) + qty
-
-            recursive_req = self._get_requirement_for_multiple(required_for_chemical)
-            for name, qty in recursive_req.items():
-                required[name] = required.get(name, 0) + qty
-
-            # required.update(recursive_req)
 
         return required
+
+    def dep_resolve(self, node: Node, resolved: List, unresolved: List):
+        """
+        Resolve the order in which we need to process out recipe.
+        Does checks for circular dependencies ( A->B->C->A )
+        Code from https://www.electricmonk.nl
+
+        :param node: Root node
+        :param resolved: List of resolved nodes
+        :param unresolved: List of onresolved nodes
+        :return:
+        """
+        unresolved.append(node)
+        for edge in node.edges:
+            if edge not in resolved:
+                if edge in unresolved:
+                    raise Exception(
+                        f"Circular reference detected: {node.name} -> {edge.name}"
+                    )
+                self.dep_resolve(edge, resolved, unresolved)
+        resolved.append(node)
+        unresolved.remove(node)
 
     def ore_needed_for_one_fuel(self) -> int:
         """ Compute how many ORE we need for ONE fuel object"""
         # Do a recursive from FUEL to ORE
         fuel = self._get_requirement_for_one("FUEL", 1)
-        res = self._get_requirement_for_multiple(fuel)
 
+        # Do something.. :(
+        # What do I need:
+        # Fuel: A: 7, E: 1
+        # For 7 A: 70 ORE
+        # Add checks for what we need to produce (A, B, C, D, E, FUEL), and what we can
+        # produce
+
+        # Let's create the nodes, and see if if this works if we can shoehorn this into
+        # the main algoritm.
+        nodes = {}
+        root_node = False
+        # Firstly, Creates nodes
+        for key, recipe in self.recipes.items():
+            node = Node(key)
+            nodes[key] = node
+            if key == "FUEL":
+                root_node = node
+
+        # Since ORE isn't really output but the result, we add it by hand
+        nodes["ORE"] = Node("ORE")
+
+        # Next, create all the Edges
+        for key, recipe in self.recipes.items():
+            for input_recipe in recipe.inputs:
+                input_recipe_node = nodes[input_recipe.name]
+                nodes[key].add_edge(input_recipe_node)
+
+
+        resolved = []
+        self.dep_resolve(root_node, resolved, [])
         return 0
 
 

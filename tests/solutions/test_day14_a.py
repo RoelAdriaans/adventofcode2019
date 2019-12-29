@@ -1,6 +1,6 @@
 import pytest
 
-from solutions.day14 import Day14PartA, Recipe, Chemical, NanoFactory
+from solutions.day14 import Day14PartA, Recipe, NanoFactory
 
 
 class TestDay14PartA:
@@ -37,7 +37,7 @@ class TestDay14PartA:
         a = factory._get_requirement_for_one("A", 12)
         assert a["ORE"] == 20
 
-        ore = factory.ore_needed_for_one_fuel()
+        ore = factory.ore_needed_for_n_fuel(1)
         assert ore == 31
 
     @pytest.mark.parametrize(
@@ -102,4 +102,4 @@ class TestDay14PartA:
         """ Result we got when we did the real solution """
         solution = Day14PartA()
         res = solution("day_14/day14.txt")
-        assert res == 0
+        assert res == 1065255

@@ -84,15 +84,6 @@ class NanoFactory:
                 result[input_recipe.name] = input_recipe.consumable * number_needed
         return result
 
-    def _get_requirement_for_multiple(self, required: Dict):
-        """
-        Computer the requirements for multiple outputs, recursive.
-        :param outputs:
-        :return:
-        """
-
-        return required
-
     def dep_resolve(self, node: Node, resolved: List, unresolved: List):
         """
         Resolve the order in which we need to process out recipe.
@@ -148,11 +139,9 @@ class NanoFactory:
         self.dep_resolve(root_node, resolved, [])
         return resolved
 
-    def ore_needed_for_one_fuel(self) -> int:
-        """ Compute how many ORE we need for ONE fuel object"""
+    def ore_needed_for_n_fuel(self, n=1) -> int:
+        """ Compute how many ORE we need for `n` fuel object"""
         # Do a recursive from FUEL to ORE
-        # fuel = self._get_requirement_for_one("FUEL", 1)
-
         resolved = self.resolve_tree()
 
         counter = Counter()
@@ -164,7 +153,7 @@ class NanoFactory:
                 continue
 
             if node.name == "FUEL":
-                qty = 1
+                qty = n
             else:
                 qty = counter[node.name]
 
@@ -182,10 +171,49 @@ class Day14PartA(Day14, FileReaderSolution):
     def solve(self, input_data: str) -> int:
         factory = NanoFactory()
         factory.read_input(input_data)
-        ore = factory.ore_needed_for_one_fuel()
+        ore = factory.ore_needed_for_n_fuel()
         return ore
 
 
 class Day14PartB(Day14, FileReaderSolution):
+    def binary_search(
+        self, search: int = 1_000_000_000_000, factory: NanoFactory = None
+    ) -> int:
+        """
+        Implement a binary search to search for the magic number
+        :param search:
+        :param factory:
+        :return:
+        """
+        if not factory:
+            return -1
+
+        mid = 0
+        first = 1
+        last = search
+        found = False
+        ore_needed = 0
+        while first <= last and not found:
+            mid = (first + last) // 2
+            ore_needed = factory.ore_needed_for_n_fuel(mid)
+            if ore_needed == search:
+                return mid
+            else:
+                if search < ore_needed:
+                    last = mid - 1
+                else:
+                    first = mid + 1
+
+        # Our result may not overshoot the search, remove one if too high
+        if ore_needed > search:
+            mid -= 1
+
+        return mid
+
     def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+        factory = NanoFactory()
+        factory.read_input(input_data)
+        res = 1_000_000_000_000
+
+        res = self.binary_search(res, factory)
+        return res

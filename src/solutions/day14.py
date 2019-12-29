@@ -115,20 +115,12 @@ class NanoFactory:
         resolved.append(node)
         unresolved.remove(node)
 
-    def ore_needed_for_one_fuel(self) -> int:
-        """ Compute how many ORE we need for ONE fuel object"""
-        # Do a recursive from FUEL to ORE
-        fuel = self._get_requirement_for_one("FUEL", 1)
+    def create_nodes(self) -> Node:
+        """
+        Create all the `Node` instances for the current recipes and return the
+        root_node with all the childeren in the Edges
+        """
 
-        # Do something.. :(
-        # What do I need:
-        # Fuel: A: 7, E: 1
-        # For 7 A: 70 ORE
-        # Add checks for what we need to produce (A, B, C, D, E, FUEL), and what we can
-        # produce
-
-        # Let's create the nodes, and see if if this works if we can shoehorn this into
-        # the main algoritm.
         nodes = {}
         root_node = False
         # Firstly, Creates nodes
@@ -147,10 +139,39 @@ class NanoFactory:
                 input_recipe_node = nodes[input_recipe.name]
                 nodes[key].add_edge(input_recipe_node)
 
+        return root_node
 
+    def resolve_tree(self) -> List[Node]:
+        """ Resolve the tree and return a list of nodes in order to process them."""
+        root_node = self.create_nodes()
         resolved = []
         self.dep_resolve(root_node, resolved, [])
-        return 0
+        return resolved
+
+    def ore_needed_for_one_fuel(self) -> int:
+        """ Compute how many ORE we need for ONE fuel object"""
+        # Do a recursive from FUEL to ORE
+        # fuel = self._get_requirement_for_one("FUEL", 1)
+
+        resolved = self.resolve_tree()
+
+        counter = Counter()
+        # See what we need. We need to start revedsed, because we do not know how many
+        # ORE we need for 1 FUEL
+        for node in reversed(resolved):
+            if len(node.edges) == 0:
+                # Ore, doesn't need anything
+                continue
+
+            if node.name == "FUEL":
+                qty = 1
+            else:
+                qty = counter[node.name]
+
+            requirements_for_node = self._get_requirement_for_one(node.name, qty)
+            counter.update(requirements_for_node)
+
+        return counter["ORE"]
 
 
 class Day14:

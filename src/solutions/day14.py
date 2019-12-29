@@ -181,34 +181,30 @@ class Day14PartB(Day14, FileReaderSolution):
     ) -> int:
         """
         Implement a binary search to search for the magic number
-        :param search:
-        :param factory:
-        :return:
+        :param search: The number we want to his
+        :param factory: The NanoFactory that generates the ore
+        :return: Number if `fuel` that can be created from `search` ore.
         """
         if not factory:
             return -1
 
-        mid = 0
-        first = 1
-        last = search
+        low = 1
+        middle = 0
+        high = search
         found = False
-        ore_needed = 0
-        while first <= last and not found:
-            mid = (first + last) // 2
-            ore_needed = factory.ore_needed_for_n_fuel(mid)
+
+        while low < high and not found:
+            middle = (low + high + 1) // 2
+            ore_needed = factory.ore_needed_for_n_fuel(middle)
             if ore_needed == search:
-                return mid
+                return middle
             else:
                 if search < ore_needed:
-                    last = mid - 1
+                    high = middle - 1
                 else:
-                    first = mid + 1
+                    low = middle
 
-        # Our result may not overshoot the search, remove one if too high
-        if ore_needed > search:
-            mid -= 1
-
-        return mid
+        return middle
 
     def solve(self, input_data: str) -> int:
         factory = NanoFactory()

@@ -3,10 +3,6 @@ from utils.abstract import FileReaderSolution
 from utils.advent_utils import string_to_list_of_ints
 
 
-class ProgramFinished(Exception):
-    pass
-
-
 class Day05:
     pass
 

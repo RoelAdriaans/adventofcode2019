@@ -42,6 +42,7 @@ class IntCode:
     relative_base = 0
     instructions: DefaultDict[int, int]
     input_values: deque
+    input_function = None
 
     def __init__(self):
         self.reset()
@@ -62,6 +63,9 @@ class IntCode:
 
     def set_input_value(self, input_values: List[int]):
         self.input_values = deque(input_values)
+
+    def set_input_function(self, input_function):
+        self.input_function = input_function
 
     def _parse_current_opcode(self) -> Tuple[int, List[int]]:
         current_opcode = self.instructions[self.program_counter]
@@ -162,7 +166,10 @@ class IntCode:
             self.program_counter += 4
 
         elif current_opcode == Opcode.STORE_INPUT:
-            value = self.input_values.popleft()
+            if self.input_function:
+                value = self.input_function()
+            else:
+                value = self.input_values.popleft()
             self.instructions[store_1] = value
             self.program_counter += 2
 

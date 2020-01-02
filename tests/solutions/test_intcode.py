@@ -24,3 +24,28 @@ class TestIntcode:
 
         result = intcode.process_instruction()
         assert result == 1982
+
+    def test_load_save(self):
+        intcode = IntCode()
+        # Set relative base to 100,
+        # Return value at location 1
+        # Store input at 1
+        intcode.load_input_values([42])
+        intcode.load_instructions([9, 100, 4, 1, 3, 1, 4, 1])
+
+        # Save computer
+        save = intcode.save()
+
+        output = intcode.run_return_or_raise()
+        assert output == 100
+
+        # Run the next instructions
+        output = intcode.run_return_or_raise()
+        assert output == 42
+
+        # Load the computer again
+        intcode.load(save)
+
+        # Next output should be 100 again
+        output = intcode.run_return_or_raise()
+        assert output == 100

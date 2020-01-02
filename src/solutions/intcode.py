@@ -1,6 +1,7 @@
 from collections import defaultdict, deque
 from enum import IntEnum
 from typing import DefaultDict, List, Tuple
+import json
 
 
 class ProgramFinished(Exception):
@@ -46,6 +47,28 @@ class IntCode:
 
     def __init__(self):
         self.reset()
+
+    def load(self, load_data: str):
+        """ Load the computer from a json string.
+        This method only restores the state, not the input values or function.
+        """
+        data = json.loads(load_data)
+        self.program_counter = data["program_counter"]
+        self.relative_base = data["relative_base"]
+
+        # Load the instructions into a defaultDict
+        self.instructions = defaultdict(int)
+        for location, value in data["instructions"].items():
+            self.instructions[int(location)] = int(value)
+
+    def save(self) -> str:
+        """ Save the state as a json string """
+        data = {
+            "program_counter": self.program_counter,
+            "relative_base": self.relative_base,
+            "instructions": self.instructions.copy(),
+        }
+        return json.dumps(data)
 
     def reset(self):
         self.program_counter = 0

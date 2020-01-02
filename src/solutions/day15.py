@@ -2,15 +2,21 @@ from collections import defaultdict
 from enum import IntEnum
 from typing import List, Tuple, Union, NamedTuple, Dict
 from time import sleep
-
+from random import randint
 from solutions.intcode import IntCode, ProgramFinished
 from utils.abstract import FileReaderSolution
 from utils.advent_utils import string_to_list_of_ints
+from collections import deque, defaultdict
 
 
 class Point(NamedTuple):
     x: int
     y: int
+
+
+class Rotate(IntEnum):
+    LEFT = 0
+    RIGHT = 1
 
 
 class Movement(IntEnum):
@@ -20,15 +26,17 @@ class Movement(IntEnum):
     EAST = 4
 
     @staticmethod
-    def rotate(current_direction: "Movement", rotate_direction: int) -> "Movement":
+    def rotate(current_direction: "Movement", rotate_direction: Rotate) -> "Movement":
         """ Rotate the robot
         :param current_direction: Instance of Movement with current durection
         :param rotate_direction: Rotate: 0 Rotate left, 1 Rotate right
         """
-        if rotate_direction == 1:
+        if rotate_direction == Rotate.RIGHT:
             turn_dict = {1: 4, 2: 3, 3: 1, 4: 2}
-        else:
+        elif rotate_direction == Rotate.LEFT:
             turn_dict = {1: 3, 2: 4, 3: 2, 4: 1}
+        else:
+            raise ValueError(f"Unknown rotateion {rotate_direction=}")
 
         new_direction = turn_dict[current_direction.value]
         return Movement(new_direction)
@@ -68,6 +76,10 @@ class Movement(IntEnum):
 
         new_direction = location_dict[current_direction.value]
         return Movement(new_direction)
+
+DIRECTIONS = [Movement.NORTH, Movement.SOUTH, Movement.WEST, Movement.EAST]
+ANTI_DIRECTIONS = [Movement.SOUTH, Movement.NORTH, Movement.EAST, Movement.WEST]
+DELTAS = [(0, 1), (0, -1), (-1, 0), (1, 0)]
 
 
 class StatusCode(IntEnum):
@@ -161,62 +173,52 @@ class Day15:
         self.paths = []
 
     def run_robot(self, input_data: str):
+        visited = {Point(0, 0)}
+
+        inputs = deque([])
+
+        def get_input() -> int:
+            res = inputs.popleft()
+            return res
+
+        # computer = IntcodeComputer(PROGRAM, get_input)
+        computer = IntCode()
         instructions = string_to_list_of_ints(input_data)
-        intcode = IntCode()
-        current_direction = Movement.NORTH
-        path = []
-        locations_visited = set()
-        counter = 0
+        computer.load_instructions(instructions)
+        computer.set_input_function(get_input)
 
-        def return_input():
-            # Implement Dijkstra's thing here. Or, only when we have the grid
-            print(f"Returning input: {current_direction} ({current_direction.value})")
-            return current_direction.value
+        frontier = deque([])
+        frontier.append((computer.save(), 0, Point(0, 0)))
 
-        intcode.set_input_function(return_input)
-        intcode.load_instructions(instructions)
-        # Current location of the bot:
-        point = Point(0, 0)
-        current_location = self.get_location(point)
-        current_location.location_type = Tile.OPEN
-        # First, Let's see if we can build anything
-        try:
-            while True:
-                result = intcode.run_return_or_raise()
-                status = StatusCode(result)
-                if status == StatusCode.HIT_WALL:
-                    # The position we tried to move into was a wall:
-                    wall_point = Movement.direction_update_x_y(current_direction, point)
-                    wall_location = self.get_location(wall_point)
-                    wall_location.location_type = Tile.WALL
-
+        while frontier:
+            save_state, num_steps, point = frontier.popleft()
+            computer.load(save_state)
+            for direction, anti, (dx, dy) in zip(DIRECTIONS, ANTI_DIRECTIONS, DELTAS):
+                inputs.append(direction.value)
+                status = StatusCode(computer.run_return_or_raise())
+                if status == StatusCode.MOVE_REQUESTED_INSIDE:
+                    print("found oxygen after", num_steps + 1, "steps")
+                    return num_steps + 1, computer
+                elif status == StatusCode.HIT_WALL:
+                    pass
                 elif status == StatusCode.MOVE_REQUESTED:
-                    point = Movement.direction_update_x_y(current_direction, point)
-                    location = self.get_location(point)
-                    location.location_type = Tile.OPEN
-
-                    path.append(location)
-                    locations_visited.add(point)
-
-                elif status == StatusCode.MOVE_REQUESTED_INSIDE:
-                    self.grid[point].location_type = Tile.OXYGEN
-                    path.append(point)
-                    locations_visited.add(point)
-                    return
-
-                sleep(0.8)
-                print(chr(27) + "[2J")
-
-                print(self.show_screen(point, current_direction))
-        except ProgramFinished:
-            print(self.show_screen(point, False))
+                    new_loc = Point(point.x + dx, point.y + dy)
+                    if new_loc not in visited:
+                        visited.add(new_loc)
+                        frontier.append((computer.save(), num_steps + 1, new_loc))
+                        inputs.append(anti.value)
+                        computer.run_return_or_raise()
+                    else:
+                        inputs.append(anti.value)
+                        computer.run_return_or_raise()
+        print("Nothing found?")
 
 
 class Day15PartA(Day15, FileReaderSolution):
     def solve(self, input_data: str) -> int:
         self.create_grid()
-        self.run_robot(input_data)
-        return -1
+        steps, _ = self.run_robot(input_data)
+        return steps
 
 
 class Day15PartB(Day15, FileReaderSolution):

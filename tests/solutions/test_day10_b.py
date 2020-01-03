@@ -1,5 +1,3 @@
-import pytest
-
 from solutions.day10 import Astroid, Day10PartB
 
 

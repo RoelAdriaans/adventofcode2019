@@ -1,5 +1,3 @@
-import pytest
-
 from solutions.day15 import Day15PartA
 
 

@@ -55,9 +55,9 @@ class Tile(IntEnum):
     def show(tile):
         values = {
             Tile.DROID: "D",
-            Tile.WALL: "░",
-            Tile.OPEN: " ",
-            Tile.OXYGEN: "*",
+            Tile.WALL: "#",
+            Tile.OPEN: ".",
+            Tile.OXYGEN: "O",
         }
         return values[tile]
 
@@ -174,8 +174,9 @@ class Day15:
                                 num_steps=queue.num_steps + 1,
                             )
                         )
-                        self.grid[queue.point] = Location(
-                            point=queue.point, location_type=Tile.OPEN
+                        # Add the new location to the grid
+                        self.grid[new_loc] = Location(
+                            point=new_loc, location_type=Tile.OPEN
                         )
 
 
@@ -183,9 +184,62 @@ class Day15PartA(Day15, FileReaderSolution):
     def solve(self, input_data: str) -> int:
         self.run_robot(input_data)
         oxygen = self.oxygen_points.pop()
+        # Uncomment these lines to see the final result.
+        # print(chr(27) + "[2J")
+        # print(self.show_screen(Point(-1_000_000, -1_000_000)))
+
         return oxygen[1]
 
 
 class Day15PartB(Day15, FileReaderSolution):
+    def compute_fill_with_oxygen(self) -> int:
+        """ Fill the grid with oxygen, starting from the position where the
+        oxygen comes from.
+
+        Return how long it takes for the oxygen is filled
+        """
+        # Counter = 0
+        # Find the oxygen point(s)
+        # Compute the points around it what are of type OPEN
+        # Nothing found: Return counter
+        # Fill those points with oxygen
+        # Counter += 1
+
+        time_counter = 0
+        while True:
+            # Uncomment there lines to see the progress
+            # from time import sleep
+            # sleep(0.5)
+            # print(chr(27) + "[2J")
+            # print(self.show_screen(Point(-100000, -100000)))
+            # print(f"{time_counter=}")
+            time_counter += 1
+
+            oxygen_points = [
+                location
+                for location in self.grid.values()
+                if location.location_type == Tile.OXYGEN
+            ]
+            # Check for open points
+            open_points = [
+                location
+                for location in self.grid.values()
+                if location.location_type == Tile.OPEN
+            ]
+            if len(open_points) == 0:
+                return time_counter
+            for oxygen_point in oxygen_points:
+                # Check if the surrounding points are empty:
+                for direction in Direction:
+                    test_location = Direction.direction_update_x_y(
+                        current_direction=direction, point=oxygen_point.point
+                    )
+                    if (
+                        test_location in self.grid
+                        and self.grid[test_location].location_type == Tile.OPEN
+                    ):
+                        self.grid[test_location].location_type = Tile.OXYGEN
+
     def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+        self.run_robot(input_data)
+        return self.compute_fill_with_oxygen()

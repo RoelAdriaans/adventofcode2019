@@ -10,6 +10,7 @@ modules = [
     (day13.Day13PartA, ("day_13/day13.txt",)),
     (day13.Day13PartB, ("day_13/day13.txt",)),
     (day15.Day15PartA, ("day_15/day15.txt",)),
+    (day15.Day15PartB, ("day_15/day15.txt",)),
 ]
 
 

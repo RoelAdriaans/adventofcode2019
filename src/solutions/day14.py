@@ -204,6 +204,9 @@ class Day14PartB(Day14, FileReaderSolution):
                 else:
                     low = middle
 
+        # Our result may not overshoot the search, remove one if too high
+        if ore_needed > search:
+            middle -= 1
         return middle
 
     def solve(self, input_data: str) -> int:

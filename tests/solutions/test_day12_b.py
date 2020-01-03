@@ -1,6 +1,6 @@
 import pytest
 
-from solutions.day12 import Day12PartB, Galaxy, Moon
+from solutions.day12 import Day12PartB
 
 
 class TestDay12PartB:

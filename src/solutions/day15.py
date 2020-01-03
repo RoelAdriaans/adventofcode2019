@@ -1,12 +1,10 @@
-from collections import defaultdict
+from collections import deque
 from enum import IntEnum
-from typing import List, Tuple, Union, NamedTuple, Dict, Optional
-from time import sleep
-from random import randint
-from solutions.intcode import IntCode, ProgramFinished
+from typing import Dict, NamedTuple, Optional
+
+from solutions.intcode import IntCode
 from utils.abstract import FileReaderSolution
 from utils.advent_utils import string_to_list_of_ints
-from collections import deque, defaultdict
 
 
 class Point(NamedTuple):
@@ -131,7 +129,13 @@ class Day15:
         computer.set_input_function(get_input)
 
         # frontier will be a deque with VisitQueue
-        frontier = deque([VisitQueue(computer_state=computer.save(), point=Point(0, 0), num_steps=0,)])
+        frontier = deque(
+            [
+                VisitQueue(
+                    computer_state=computer.save(), point=Point(0, 0), num_steps=0,
+                )
+            ]
+        )
 
         while frontier:
             queue = frontier.popleft()

@@ -1,7 +1,7 @@
+import json
 from collections import defaultdict, deque
 from enum import IntEnum
 from typing import DefaultDict, List, Tuple
-import json
 
 
 class ProgramFinished(Exception):

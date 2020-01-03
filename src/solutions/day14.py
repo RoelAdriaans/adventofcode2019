@@ -1,10 +1,10 @@
 import math
 import typing
-
-from collections import defaultdict, Counter
-from typing import List, NamedTuple, Dict
-from utils.abstract import FileReaderSolution
+from collections import Counter, defaultdict
 from dataclasses import dataclass
+from typing import Dict, List, NamedTuple
+
+from utils.abstract import FileReaderSolution
 
 
 class Chemical(NamedTuple):

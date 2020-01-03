@@ -1,4 +1,5 @@
 import math
+import typing
 
 from collections import defaultdict, Counter
 from typing import List, NamedTuple, Dict
@@ -111,9 +112,8 @@ class NanoFactory:
         Create all the `Node` instances for the current recipes and return the
         root_node with all the childeren in the Edges
         """
-
         nodes = {}
-        root_node = False
+        root_node: Node
         # Firstly, Creates nodes
         for key, recipe in self.recipes.items():
             node = Node(key)
@@ -135,7 +135,7 @@ class NanoFactory:
     def resolve_tree(self) -> List[Node]:
         """ Resolve the tree and return a list of nodes in order to process them."""
         root_node = self.create_nodes()
-        resolved = []
+        resolved: List[Node] = []
         self.dep_resolve(root_node, resolved, [])
         return resolved
 
@@ -144,7 +144,7 @@ class NanoFactory:
         # Do a recursive from FUEL to ORE
         resolved = self.resolve_tree()
 
-        counter = Counter()
+        counter: typing.Counter = Counter()
         # See what we need. We need to start revedsed, because we do not know how many
         # ORE we need for 1 FUEL
         for node in reversed(resolved):
@@ -192,6 +192,7 @@ class Day14PartB(Day14, FileReaderSolution):
         middle = 0
         high = search
         found = False
+        ore_needed = 0
 
         while low < high and not found:
             middle = (low + high + 1) // 2

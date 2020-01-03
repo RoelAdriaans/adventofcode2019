@@ -1,7 +1,6 @@
 import pytest
-from collections import Counter
 
-from solutions.day14 import Day14PartB, NanoFactory
+from solutions.day14 import Day14PartB
 
 
 class TestDay14PartB:

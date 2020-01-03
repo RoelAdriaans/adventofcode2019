@@ -1,6 +1,6 @@
 from collections import defaultdict
 from enum import IntEnum
-from typing import List, Tuple, Union, NamedTuple, Dict
+from typing import List, Tuple, Union, NamedTuple, Dict, Optional
 from time import sleep
 from random import randint
 from solutions.intcode import IntCode, ProgramFinished
@@ -68,9 +68,9 @@ class Location:
     """ Location / Pixel in the maze """
 
     point: Point
-    location_type: Tile
+    location_type: Optional[Tile]
 
-    def __init__(self, point: Point, location_type: Tile = None):
+    def __init__(self, point: Point, location_type: Optional[Tile] = None):
         self.point = point
         self.location_type = location_type
 
@@ -130,11 +130,8 @@ class Day15:
         computer.load_instructions(instructions)
         computer.set_input_function(get_input)
 
-        frontier = deque([])
         # frontier will be a deque with VisitQueue
-        frontier.append(
-            VisitQueue(computer_state=computer.save(), point=Point(0, 0), num_steps=0,)
-        )
+        frontier = deque([VisitQueue(computer_state=computer.save(), point=Point(0, 0), num_steps=0,)])
 
         while frontier:
             queue = frontier.popleft()

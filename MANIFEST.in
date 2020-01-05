@@ -1,2 +1,2 @@
 include requirements.txt
-recursive-include src *.txt
+recursive-include src *.txt *.json

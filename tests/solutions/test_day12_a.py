@@ -1,4 +1,4 @@
-from solutions.day12 import Day12PartA, Moon, Galaxy
+from solutions.day12 import Day12PartA, Galaxy, Moon
 
 
 class TestDay12PartA:

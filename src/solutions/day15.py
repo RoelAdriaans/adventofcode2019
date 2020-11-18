@@ -132,7 +132,9 @@ class Day15:
         frontier = deque(
             [
                 VisitQueue(
-                    computer_state=computer.save(), point=Point(0, 0), num_steps=0,
+                    computer_state=computer.save(),
+                    point=Point(0, 0),
+                    num_steps=0,
                 )
             ]
         )
@@ -193,7 +195,7 @@ class Day15PartA(Day15, FileReaderSolution):
 
 class Day15PartB(Day15, FileReaderSolution):
     def compute_fill_with_oxygen(self) -> int:
-        """ Fill the grid with oxygen, starting from the position where the
+        """Fill the grid with oxygen, starting from the position where the
         oxygen comes from.
 
         Return how long it takes for the oxygen is filled

@@ -78,7 +78,7 @@ class Day10:
             astroid: self.count_asteroids_for_location(astroid.x, astroid.y)
             for astroid in self.astroids
         }
-        best_astroid = max(locations, key=locations.get)
+        best_astroid = max(locations, key=locations.get)  # type: ignore
         return best_astroid, locations[best_astroid]
 
     def calculate_angles(self, location: Astroid):

@@ -1,5 +1,5 @@
 import itertools
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 from solutions.intcode import IntCode, ProgramFinished
 from utils.abstract import FileReaderSolution

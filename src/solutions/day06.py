@@ -1,6 +1,7 @@
 from typing import List
 
 from anytree import Node, Walker  # type: ignore
+
 from utils.abstract import FileReaderSolution
 
 

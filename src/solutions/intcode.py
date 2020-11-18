@@ -49,7 +49,7 @@ class IntCode:
         self.reset()
 
     def load(self, load_data: str):
-        """ Load the computer from a json string.
+        """Load the computer from a json string.
         This method only restores the state, not the input values or function.
         """
         data = json.loads(load_data)

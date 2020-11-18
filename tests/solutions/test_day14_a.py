@@ -1,6 +1,6 @@
 import pytest
 
-from solutions.day14 import Day14PartA, Recipe, NanoFactory
+from solutions.day14 import Day14PartA, NanoFactory, Recipe
 
 
 class TestDay14PartA:

@@ -18,11 +18,11 @@ class Recipe(NamedTuple):
 
     @staticmethod
     def parse_recipe_string(input_string: str) -> "Recipe":
-        """ Parse a string as a Recipe and return a new Recipe.
+        """Parse a string as a Recipe and return a new Recipe.
 
         :param input_string: Input string, for example "1 A, 2 B, 3 C => 2 D
         :return Recipe object
-         """
+        """
         inputs, outputs = input_string.strip().split(" => ")
 
         input_parts = inputs.split(",")
@@ -69,7 +69,7 @@ class NanoFactory:
             self.recipes[recipe.output.name] = recipe
 
     def _get_requirement_for_one(self, output: str, n: int) -> Dict[str, int]:
-        """ Compute what we need for `n` units of `output` and return this as a Dict.
+        """Compute what we need for `n` units of `output` and return this as a Dict.
         For example, with the recipe `4 C, 1 A => 1 CA`, when we need 4 of `CA`, return
         {"C": 16, "A": 4}
         """

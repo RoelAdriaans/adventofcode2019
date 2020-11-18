@@ -29,7 +29,7 @@ class Day08:
         found = {}
         for x in range(0, len(self.frames)):
             found[x] = self.count_number_per_frame(number=number_to_find, frame=x)
-        return min(found, key=found.get)
+        return min(found, key=found.get)  # type: ignore
 
     @staticmethod
     def _compute_per_pixel(pixels: List[int]) -> int:

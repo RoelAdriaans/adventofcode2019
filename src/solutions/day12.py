@@ -2,6 +2,7 @@ from itertools import combinations
 from typing import List, Set, Tuple
 
 import numpy as np  # type: ignore
+
 from utils.abstract import FileReaderSolution
 
 
@@ -46,10 +47,10 @@ class Moon:
 
     @staticmethod
     def parse_input(input_str: str) -> "Moon":
-        """ Parse input string and return a moon
+        """Parse input string and return a moon
 
-         Example input: <x=-1, y=0, z=2>
-         """
+        Example input: <x=-1, y=0, z=2>
+        """
         input_str = input_str.replace("<", "").replace(">", "")
         parts = input_str.split(",")
         moon_data = {}
@@ -62,7 +63,7 @@ class Moon:
         return moon
 
     def get_potential_energy(self) -> int:
-        """ potential energy
+        """potential energy
         A moon's potential energy is the sum of the absolute values of its
         x, y, and z position coordinates
         :return:
@@ -70,7 +71,7 @@ class Moon:
         return abs(self.x) + abs(self.y) + abs(self.z)
 
     def get_kinetic_energy(self) -> int:
-        """ A moon's kinetic energy is the sum of the absolute values of its velocity
+        """A moon's kinetic energy is the sum of the absolute values of its velocity
          coordinates
         :return:
         """
@@ -78,8 +79,8 @@ class Moon:
         return abs(self.dx) + abs(self.dy) + abs(self.dz)
 
     def get_total_energy(self) -> int:
-        """ The total energy for a single moon is its potential energy multiplied by its
-         kinetic energy. """
+        """The total energy for a single moon is its potential energy multiplied by its
+        kinetic energy."""
         return self.get_kinetic_energy() * self.get_potential_energy()
 
 
@@ -157,7 +158,7 @@ class Day12PartB(Day12, FileReaderSolution):
         return values
 
     def find_returning(self, galaxy: Galaxy, var: str) -> int:
-        """ Step over the galaxy movements until we find a position we seen before, for
+        """Step over the galaxy movements until we find a position we seen before, for
         a single variable, `var`. This can be `x`, `y` or `z`.
 
         :return The number is steps it took before we reached the initial position

@@ -49,4 +49,24 @@ class Day16PartA(Day16, FileReaderSolution):
 
 class Day16PartB(Day16, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        raise NotImplementedError
+        signal = input_data * 10_000
+        offset = int(signal[0:7])
+
+        signal = signal[offset:]
+        # Create a list from our string
+        signal = string_of_single_to_list_of_ints(signal)
+        signal_length = len(signal)
+
+        # Algoritm: Running sum = 0
+        # Digits: (Digit + running sum) mod(10)
+        # By reddit, they helped with the logic
+
+        # Perform 100 tranformations
+        for loop_nr in range(100):
+            running_sum = 0
+            for digit_location in reversed(range(signal_length)):
+                running_sum += signal[digit_location]
+                signal[digit_location] = running_sum % 10
+
+        # Convert list of ints to single integer and take only the first 8
+        return int("".join([str(i) for i in signal[:8]]))

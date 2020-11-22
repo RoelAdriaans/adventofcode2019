@@ -2,7 +2,7 @@ from typing import Tuple
 
 import click
 
-from solutions import day01, day11, day13, day15
+from solutions import day01, day11, day13, day15, day16
 
 modules = [
     (day01.Day01PartA, ("day_01/day01.txt",)),
@@ -11,7 +11,8 @@ modules = [
     (day13.Day13PartA, ("day_13/day13.txt",)),
     (day13.Day13PartB, ("day_13/day13.txt",)),
     (day15.Day15PartA, ("day_15/day15.txt",)),
-    (day15.Day15PartB, ("day_15/day15.txt",)),
+    (day15.Day15PartA, ("day_15/day15.txt",)),
+    (day16.Day16PartB, ("day_16/day16.txt",)),
 ]
 
 

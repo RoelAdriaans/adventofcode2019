@@ -1,4 +1,5 @@
-from typing import List, Tuple
+from collections import defaultdict
+from typing import List, Tuple, Dict
 
 from solutions.intcode import IntCode, ProgramFinished
 from utils.abstract import FileReaderSolution
@@ -8,40 +9,35 @@ from utils.advent_utils import string_to_list_of_ints
 class Day17:
     @staticmethod
     def print_grid(grid):
-        for x in grid:
-            print(chr(x), end="")
+        for row in grid.values():
+            print("".join([chr(i) for i in row.values()]), end="\n")
 
-    def run_bot(self, input_data: str) -> List[int]:
+    def run_bot(self, input_data: str) -> Dict[int, Dict[int, int]]:
         instructions = string_to_list_of_ints(input_data)
 
         intcode = IntCode()
         intcode.load_instructions(instructions)
-        chars = []
+        chars = defaultdict(dict)
         try:
+            row = 0
+            col = 0
             while True:
                 x = intcode.run_return_or_raise()
-                chars.append(x)
+                if x == ord("\n"):
+                    # Newline
+                    row += 1
+                    col = 0
+                else:
+                    chars[row][col] = x
+                    col += 1
         except ProgramFinished:
             return chars
 
     @staticmethod
-    def grid_to_lists(grid: List[int]) -> List[List]:
-        """ Convert to a 2d grid"""
-        width = grid.index(ord("\n")) + 1
-        num_loops = len(grid) / width
-        res = []
-        for i in range(int(num_loops)):
-            idx_start = i * width
-            idx_end = (i * width) + width - 1
-            res.append(grid[idx_start:idx_end])
-        return res
-
-    @staticmethod
-    def compute_points(grid):
+    def compute_points(grid_lines):
         """ Compute the points in the grid"""
         # First we will make a 2d array
         match = ord("#")
-        grid_lines = Day17.grid_to_lists(grid)
         matches = []
 
         for x in range(1, len(grid_lines) - 1):
@@ -60,7 +56,6 @@ class Day17:
                     and current == match
                 ):
                     matches.append((x, y))
-                    grid_lines[x][y] = "O"
 
         return matches
 

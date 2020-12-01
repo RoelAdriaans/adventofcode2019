@@ -1,6 +1,6 @@
 import pytest
 
-from solutions.intcode import IntCode
+from adventofcode2019.solutions.intcode import IntCode
 
 
 class TestIntcode:

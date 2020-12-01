@@ -1,7 +1,7 @@
 from typing import List
 
-from utils.abstract import FileReaderSolution
-from utils.advent_utils import string_of_single_to_list_of_ints
+from adventofcode2019.utils.abstract import FileReaderSolution
+from adventofcode2019.utils.advent_utils import string_of_single_to_list_of_ints
 
 
 class Day16:
@@ -49,12 +49,12 @@ class Day16PartA(Day16, FileReaderSolution):
 
 class Day16PartB(Day16, FileReaderSolution):
     def solve(self, input_data: str) -> int:
-        signal = input_data * 10_000
-        offset = int(signal[0:7])
+        signal_str = input_data * 10_000
+        offset = int(signal_str[0:7])
 
-        signal = signal[offset:]
+        signal_str = signal_str[offset:]
         # Create a list from our string
-        signal = string_of_single_to_list_of_ints(signal)
+        signal = string_of_single_to_list_of_ints(signal_str)
         signal_length = len(signal)
 
         # Algoritm: Running sum = 0

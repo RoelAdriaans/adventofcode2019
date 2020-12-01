@@ -1,4 +1,4 @@
-from solutions.day12 import Day12PartA, Galaxy, Moon
+from adventofcode2019.solutions.day12 import Day12PartA, Galaxy, Moon
 
 
 class TestDay12PartA:

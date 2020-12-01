@@ -1,5 +1,5 @@
-from solutions.day09 import Day09PartA
-from solutions.intcode import IntCode
+from adventofcode2019.solutions.day09 import Day09PartA
+from adventofcode2019.solutions.intcode import IntCode
 
 
 class TestDay09PartA:

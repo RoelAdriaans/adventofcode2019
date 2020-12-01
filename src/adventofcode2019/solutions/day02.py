@@ -1,5 +1,5 @@
-from solutions.intcode import IntCode
-from utils.abstract import FileReaderSolution
+from adventofcode2019.solutions.intcode import IntCode
+from adventofcode2019.utils.abstract import FileReaderSolution
 
 
 class Day02:

@@ -1,5 +1,5 @@
-from utils.abstract import FileReaderSolution
-from utils.advent_utils import string_to_list_of_ints
+from adventofcode2019.utils.abstract import FileReaderSolution
+from adventofcode2019.utils.advent_utils import string_to_list_of_ints
 
 
 class Day04:

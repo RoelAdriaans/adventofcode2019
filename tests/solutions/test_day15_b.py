@@ -1,4 +1,4 @@
-from solutions.day15 import Day15PartB, Location, Point, Tile
+from adventofcode2019.solutions.day15 import Day15PartB, Location, Point, Tile
 
 
 class TestDay15PartB:

@@ -3,7 +3,7 @@ from typing import List, Set, Tuple
 
 import numpy as np  # type: ignore
 
-from utils.abstract import FileReaderSolution
+from adventofcode2019.utils.abstract import FileReaderSolution
 
 
 class Moon:

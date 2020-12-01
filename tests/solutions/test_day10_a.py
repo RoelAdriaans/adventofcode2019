@@ -1,6 +1,6 @@
 import pytest
 
-from solutions.day10 import Astroid, Day10PartA
+from adventofcode2019.solutions.day10 import Astroid, Day10PartA
 
 
 class TestDay10PartA:

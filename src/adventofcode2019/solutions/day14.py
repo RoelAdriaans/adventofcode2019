@@ -4,7 +4,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from typing import Dict, List, NamedTuple
 
-from utils.abstract import FileReaderSolution
+from adventofcode2019.utils.abstract import FileReaderSolution
 
 
 class Chemical(NamedTuple):

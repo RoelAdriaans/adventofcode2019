@@ -2,7 +2,7 @@ from typing import Tuple
 
 import click
 
-from solutions import day01, day11, day13, day15, day16, day17
+from adventofcode2019.solutions import day01, day11, day13, day15, day16, day17
 
 modules = [
     (day01.Day01PartA, ("day_01/day01.txt",)),

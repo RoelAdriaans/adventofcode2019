@@ -1,4 +1,4 @@
-from utils.abstract import FileReaderSolution
+from adventofcode2019.utils.abstract import FileReaderSolution
 
 
 class Day01:

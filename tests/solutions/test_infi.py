@@ -1,4 +1,4 @@
-from solutions.infi import Infi
+from adventofcode2019.solutions.infi import Infi
 
 
 class TestInfi:

@@ -2,7 +2,7 @@ import math
 from collections import defaultdict
 from typing import Dict, List, NamedTuple, Set, Tuple
 
-from utils.abstract import FileReaderSolution
+from adventofcode2019.utils.abstract import FileReaderSolution
 
 
 class Astroid(NamedTuple):

@@ -1,4 +1,4 @@
-from solutions.day10 import Astroid, Day10PartB
+from adventofcode2019.solutions.day10 import Astroid, Day10PartB
 
 
 class TestDay10PartB:

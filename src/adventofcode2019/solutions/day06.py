@@ -2,7 +2,7 @@ from typing import List
 
 from anytree import Node, Walker  # type: ignore
 
-from utils.abstract import FileReaderSolution
+from adventofcode2019.utils.abstract import FileReaderSolution
 
 
 class Day06:

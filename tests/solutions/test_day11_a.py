@@ -1,4 +1,4 @@
-from solutions.day11 import Day11PartA, Direction, RotateDirection
+from adventofcode2019.solutions.day11 import Day11PartA, Direction, RotateDirection
 
 
 class TestDay11PartA:

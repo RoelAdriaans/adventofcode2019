@@ -1,9 +1,12 @@
+from collections import defaultdict
+
 import pytest
 
 from adventofcode2019.solutions.day17 import Day17PartA
 
 
 class TestDay17PartA:
+    @pytest.mark.skip("No longer required")
     def test_day17a_grid_to_lists(self):
         solution = Day17PartA()
 
@@ -31,8 +34,17 @@ class TestDay17PartA:
             "..#####...^..\n",
         ]
         # Make grid as in the source: Convery ever charater to the int ascii value
-
-        grid = [ord(x) for line in test_grid for x in line]
+        grid = defaultdict(dict)
+        row = 0
+        col = 0
+        for x in "".join(test_grid):
+            if x == "\n":
+                # Newline
+                row += 1
+                col = 0
+            else:
+                grid[row][col] = ord(x)
+                col += 1
 
         # Assert that our grid is valid, and that the print function works
         solution.print_grid(grid)
@@ -48,13 +60,6 @@ class TestDay17PartA:
 
         score = solution.compute_scores(markers)
         assert score == 76
-
-    @pytest.mark.skip("This code is not yet implemented.")
-    @pytest.mark.parametrize(("input_data", "expected_result"), [("", ""), ("", "")])
-    def test_day17a_solve(self, input_data, expected_result):
-        solution = Day17PartA()
-        result = solution.solve(input_data)
-        assert result == expected_result
 
     def test_day17a_data(self):
         """ Result we got when we did the real solution """

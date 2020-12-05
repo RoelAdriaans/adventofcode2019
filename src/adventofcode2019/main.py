@@ -1,45 +1,107 @@
-from typing import Tuple
+import importlib
+import logging
+import sys
+import timeit
 
 import click
+import tqdm
 
-from adventofcode2019.solutions import day01, day11, day13, day15, day16, day17
-
-modules = [
-    (day01.Day01PartA, ("day_01/day01.txt",)),
-    (day01.Day01PartB, ("day_01/day01.txt",)),
-    (day11.Day11PartB, ("day_11/day11.txt",)),
-    (day13.Day13PartA, ("day_13/day13.txt",)),
-    (day13.Day13PartB, ("day_13/day13.txt",)),
-    (day15.Day15PartA, ("day_15/day15.txt",)),
-    (day15.Day15PartA, ("day_15/day15.txt",)),
-    (day16.Day16PartB, ("day_16/day16.txt",)),
-    (day17.Day17PartA, ("day_17/day17.txt",)),
-    (day17.Day17PartB, ("day_17/day17.txt",)),
-]
+logger = logging.getLogger(__name__)
 
 
 @click.command()
-@click.option(
-    "--module", type=click.Choice([i[0].__name__ for i in modules]), required=True
+@click.argument(
+    "day",
+    type=click.IntRange(1, 25),
 )
-def main(module):
+@click.option("--parta", "part", flag_value="parta")
+@click.option("--partb", "part", flag_value="partb")
+@click.option(
+    "-t",
+    "--timeit",
+    "timeit_",
+    type=click.INT,
+    help="Test the solution using timeit with timeit iterations",
+)
+@click.option("-v", "--verbose", is_flag=True)
+def main(day, part, timeit_, verbose):
     """
-    Simple program that runs a module from the advent of code
+    Simple program that runs a module from the advent of code.
+    DAY is an integer representing the day (1 - 25) that runs that day.
     """
-    item = [item for item in modules if item[0].__name__ == module]
-    if not item:
-        print(f"Module {module} not found")
-        return False
+    if verbose:
+        level = logging.DEBUG
     else:
-        found_item: Tuple = item[0]
+        level = logging.WARNING
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%H:%M:%S",
+    )
 
-    print(f"Running module '{found_item[0].__name__}'")
+    day = f"{int(day):02}"
 
-    for filename in found_item[1]:
-        class_to_run = found_item[0]
-        class_instance = class_to_run()
-        res = class_instance(filename)
-        print(f"Result for {filename}:\n{res}")
+    print(
+        f"Welcome to Advent of Code 2019 - {day=} - {part=} - {timeit_=} - {verbose=}"
+    )
+
+    # Try to import the solution
+    import_path = f"adventofcode2019.solutions.day{day}"
+    data_path = f"day_{day}/day{day}.txt"
+
+    logger.debug(f"Importing {import_path}")
+
+    try:
+        day_module = importlib.import_module(import_path)
+    except ModuleNotFoundError:
+        print(f"Module {day} is not yet available")
+        sys.exit(-65)
+    if timeit_:
+        execution_times = []
+        results = ""
+
+        for _ in tqdm.trange(timeit_):
+            time_prior = timeit.default_timer()
+
+            results = run_day(data_path, day, day_module, part)
+
+            time_after = timeit.default_timer()
+            execution_times.append(time_after - time_prior)
+
+        average_time = sum(execution_times) / len(execution_times)
+
+        print("Results:")
+        print(results)
+        print(
+            f"Average running time: {average_time:.6f} seconds ({timeit_} iterations)"
+        )
+    else:
+        print("Results:")
+        print(run_day(data_path, day, day_module, part))
+
+
+def run_day(data_path, day, day_module, part):
+    if part == "parta":
+        return run_parta(data_path, day, day_module)
+
+    elif part == "partb":
+        return run_partb(data_path, day, day_module)
+
+    else:
+        a = run_parta(data_path, day, day_module)
+        b = run_partb(data_path, day, day_module)
+
+        return f"Part A:\n{a}\n\nPart B:\n{b}\n"
+
+
+def run_parta(data_path, day, day_module):
+    result = getattr(day_module, f"Day{day}PartA")()(data_path)
+    return result
+
+
+def run_partb(data_path, day, day_module):
+    result = getattr(day_module, f"Day{day}PartB")()(data_path)
+    return result
 
 
 if __name__ == "__main__":
